@@ -3,15 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "scripts": {
-        "build": "browserify grid.js -o bundle.js",
-        "develop": "watchify grid.js -o bundle.js"
-    },
     "author": "",
     "license": "ISC",
-    "dependencies": {},
-    "devDependencies": {
-        "browserify": "^16.5.1",
-        "watchify": "^3.11.1"
-    }
+    "dependencies": {}
 }

@@ -22,22 +22,37 @@ body {
 }
 
 .box {
-    display: flex;
-    align-items: center;
     justify-content: center;
+    display: flex;
+    text-align: center;
+    align-items: center;
     background-color: white;
     border-style: solid;
     border-width: 1px;
 }
 
+.box[data-you] {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+.box[data-playing] {
+    background-color: #75D5FF;
+    color: white;
+    border-color: black;
+}
+
 .beatstrip,
-.keyboard {
+.keyboard,
+.arrows {
     position: relative;
     display: flex;
     width: 100%;
 }
 
 .beat,
+.arrow,
 .key {
     flex: 1 1 0px;
 }
@@ -50,11 +65,12 @@ body {
     border-width: 1px;
 }
 
-.beat.active {
+.beat[data-selected="true"] {
     background-color: #D4FFB0
 }
 
 .key {
+    opacity: 0.3;
     border-style: solid;
     border-width: 1px;
     border-color: black;
@@ -69,4 +85,23 @@ body {
 .key.black {
     height: 80px;
     background-color: black;
+}
+
+.key[data-selected="true"] {
+    opacity: 1;
+}
+
+.arrow {
+    background-color: black;
+    color: #D4FFB0;
+    font-size: 4em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+#start {
+    display: block;
+    width: 200px;
+    margin: auto;
 }

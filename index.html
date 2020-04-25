@@ -4,214 +4,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Musical Grid</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/static/style.css" />
 </head>
 
 <body>
 
-    <div class="arrow-up">Up</div>
-    <div class="arrow-bottom">Down</div>
-    <div class="arrow-left">Left</div>
-    <div class="arrow-right">Right</div>
+    <button id="start" onclick="start()">START</button>
 
-    <div class="wrapper">
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box">A</div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box">Bb</div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
-
-    </div>
+    <div id="wrapper" class="wrapper"></div>
 
     <div class="controls">
 
+        <div class="arrows">
+            <div data-direction="up" class="arrow up">&uArr;</div>
+            <div data-direction="down" class="arrow bottom">&dArr;</div>
+            <div data-direction="left" class="arrow left">&lArr;</div>
+            <div data-direction="right" class="arrow right">&rArr;</div>
+        </div>
+
         <div class="beatstrip">
 
-            <div class="beat"></div>
-            <div class="beat"></div>
-            <div class="beat active"></div>
-            <div class="beat"></div>
-            <div class="beat"></div>
-            <div class="beat"></div>
-            <div class="beat"></div>
-            <div class="beat active"></div>
-            <div class="beat"></div>
-            <div class="beat"></div>
-            <div class="beat"></div>
-            <div class="beat"></div>
+            <div data-beat="0" class="beat"></div>
+            <div data-beat="1" class="beat"></div>
+            <div data-beat="2" class="beat"></div>
+            <div data-beat="3" class="beat"></div>
+            <div data-beat="4" class="beat"></div>
+            <div data-beat="5" class="beat"></div>
+            <div data-beat="6" class="beat"></div>
+            <div data-beat="7" class="beat"></div>
+            <div data-beat="8" class="beat"></div>
+            <div data-beat="9" class="beat"></div>
+            <div data-beat="10" class="beat"></div>
+            <div data-beat="11" class="beat"></div>
 
         </div>
 
         <div class="keyboard">
 
-            <div class="key white"></div>
-            <div class="key black"></div>
-            <div class="key white"></div>
-            <div class="key black"></div>
-            <div class="key white"></div>
-            <div class="key white"></div>
-            <div class="key black"></div>
-            <div class="key white"></div>
-            <div class="key black"></div>
-            <div class="key white"></div>
-            <div class="key black"></div>
-            <div class="key white"></div>
+            <div data-note="0" class="key white"></div>
+            <div data-note="1" class="key black"></div>
+            <div data-note="2" class="key white"></div>
+            <div data-note="3" class="key black"></div>
+            <div data-note="4" class="key white"></div>
+            <div data-note="5" class="key white"></div>
+            <div data-note="6" class="key black"></div>
+            <div data-note="7" class="key white"></div>
+            <div data-note="8" class="key black"></div>
+            <div data-note="9" class="key white"></div>
+            <div data-note="10" class="key black"></div>
+            <div data-note="11" class="key white"></div>
 
         </div>
 
     </div>
+
+    <script src="/static/grid.js"></script>
 
 </body>
 
