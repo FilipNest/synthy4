@@ -137,7 +137,7 @@ let refresh = function() {
 
         // Filter out the notes that don't share the current beat
 
-        let play = linked.filter(u => u.beat === currentBeat);
+        let play = linked.filter((u) => u.beat.indexOf(currentBeat) !== -1);
 
         if (play.length) {
             play.forEach((n, i) => {
@@ -354,14 +354,13 @@ let start = () => {
 };
 
 let playNote = (note, osc) => {
+
     let oscillator = oscillators[osc];
 
     let frequency = frequencyMapping[note];
 
     oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
 
-    window.setTimeout(function() {
-        oscillator.frequency.setValueAtTime(0, audioCtx.currentTime);
-    }, (tempo - 100));
+    oscillator.frequency.setValueAtTime(0, audioCtx.currentTime + (tempo / 1000));
 
 };
