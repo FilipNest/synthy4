@@ -43,6 +43,7 @@ function parseCookies(request) {
 }
 
 const server = http.createServer((req, res) => {
+
     // Get cookies to determine if session
 
     let cookies = parseCookies(req);
@@ -72,7 +73,7 @@ const server = http.createServer((req, res) => {
         users[user] = {
             id: user,
             note: 0,
-            beat: [0, 2, 4, 6]
+            beat: new Set([0, 2, 4, 6])
         };
 
         // Get first available location
@@ -91,9 +92,23 @@ const server = http.createServer((req, res) => {
     // route for getting grid status
 
     if (req.url === "/status") {
+
         res.setHeader("Content-Type", "application/json");
 
-        res.end(JSON.stringify({ users: users, you: user }));
+        let output = JSON.stringify({ users: users, you: user }, (key, value) => {
+
+            if (key === "beat") {
+
+                return Array.from(value)
+
+            }
+
+            return value;
+
+        })
+
+        res.end(output);
+
     } else if (req.url === "/") {
         let index = fs.readFileSync("index.html", "utf8");
 
@@ -126,20 +141,19 @@ const server = http.createServer((req, res) => {
     } else if (req.url.indexOf("/beatIn") !== -1) {
         let beat = parseInt(req.url.split("?")[1]);
 
-        console.log("beatIn", beat);
-
         // Check if beat in range
 
         if (beat >= 0 && beat <= 7) {
-            users[user].beat.push(beat);
+            users[user].beat.add(beat);
         }
+
     } else if (req.url.indexOf("/beatOut") !== -1) {
         let beat = parseInt(req.url.split("?")[1]);
 
         // Check if note in range
 
         if (beat >= 0 && beat <= 7) {
-            users[user].beat = users[user].beat.filter((b) => b !== beat);
+            users[user].beat.delete(beat);
         }
 
     } else {

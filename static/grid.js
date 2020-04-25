@@ -83,11 +83,13 @@ let makeRequest = url => {
 };
 
 let refresh = function() {
+
     generateGrid();
 
     // Get status
 
     makeRequest("/status").then(data => {
+
         let users = data.users;
         you = users[data.you];
 
@@ -258,7 +260,7 @@ document.querySelectorAll("[data-beat]").forEach(b => {
 
     b.addEventListener("click", () => {
         let on = b.getAttribute("data-selected") === "true";
-        beat(beatNumber, on);
+        beat(beatNumber, !on);
     });
 });
 
