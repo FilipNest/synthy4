@@ -95,9 +95,7 @@ let refresh = function() {
             user = users[user];
 
             document.querySelector(`[data-location="${user.location}"]`).innerHTML =
-                mapping[user.note] +
-                "<br/>" +
-                (user.beat + 1).toString().padStart(2, "0");
+                mapping[user.note];
 
             if (user.id === you.id) {
                 document
@@ -118,16 +116,17 @@ let refresh = function() {
             }
         });
 
-        // Highlight the user's selected beat
+        // Highlight the user's selected beats
 
         document.querySelectorAll("[data-beat]").forEach(b => {
             let beat = parseInt(b.getAttribute("data-beat"));
 
-            if (beat === you.beat) {
+            if (you.beat.indexOf(beat) !== -1) {
                 b.setAttribute("data-selected", "true");
             } else {
                 b.setAttribute("data-selected", "false");
             }
+
         });
 
         // Get your adjacent users
@@ -259,7 +258,7 @@ document.querySelectorAll("[data-beat]").forEach(b => {
 
     b.addEventListener("click", () => {
         let on = b.getAttribute("data-selected") === "true";
-        beat(beatNumber);
+        beat(beatNumber, on);
     });
 });
 
