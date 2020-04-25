@@ -1,107 +1,107 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: sans-serif;
-    font-weight: bold;
-    background-color: #F58CFF;
+  font-family: sans-serif;
+  font-weight: bold;
+  background-color: #F58CFF;
 }
 
 .controls,
 .wrapper {
-    width: 480px;
-    margin: auto;
+  width: 240px;
+  margin: auto;
 }
 
 .wrapper {
-    display: grid;
-    grid-template-columns: repeat(12, 40px);
-    grid-template-rows: repeat(12, 40px);
-    grid-auto-flow: row;
+  display: grid;
+  grid-template-columns: repeat(12, 20px);
+  grid-template-rows: repeat(12, 20px);
+  grid-auto-flow: row;
 }
 
 .box {
-    justify-content: center;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    background-color: white;
-    border-style: solid;
-    border-width: 1px;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  background-color: white;
+  border-style: solid;
+  border-width: 1px;
 }
 
 .box[data-you] {
-    background-color: black;
-    color: white;
-    border-color: black;
+  background-color: black;
+  color: white;
+  border-color: black;
 }
 
 .box[data-playing] {
-    background-color: #75D5FF;
-    color: white;
-    border-color: black;
+  background-color: #75D5FF;
+  color: white;
+  border-color: black;
 }
 
 .beatstrip,
 .keyboard,
 .arrows {
-    position: relative;
-    display: flex;
-    width: 100%;
+  position: relative;
+  display: flex;
+  width: 100%;
 }
 
 .beat,
 .arrow,
 .key {
-    flex: 1 1 0px;
+  flex: 1 1 0px;
 }
 
 .beat {
-    background-color: #75D5FF;
-    height: 20px;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
+  background-color: #75D5FF;
+  height: 20px;
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
 }
 
 .beat[data-selected="true"] {
-    background-color: #D4FFB0
+  background-color: #D4FFB0;
 }
 
 .key {
-    opacity: 0.3;
-    border-style: solid;
-    border-width: 1px;
-    border-color: black;
-    position: relative;
+  opacity: 0.3;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  position: relative;
 }
 
 .key.white {
-    background-color: white;
-    height: 80px;
+  background-color: white;
+  height: 80px;
 }
 
 .key.black {
-    height: 80px;
-    background-color: black;
+  height: 80px;
+  background-color: black;
 }
 
 .key[data-selected="true"] {
-    opacity: 1;
+  opacity: 1;
 }
 
 .arrow {
-    background-color: black;
-    color: #D4FFB0;
-    font-size: 4em;
-    display: flex;
-    justify-content: center;
-    align-content: center;
+  background-color: black;
+  color: #D4FFB0;
+  font-size: 4em;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 #start {
-    display: block;
-    width: 200px;
-    margin: auto;
+  display: block;
+  width: 200px;
+  margin: auto;
 }
