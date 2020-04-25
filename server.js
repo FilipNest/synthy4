@@ -126,10 +126,11 @@ const server = http.createServer((req, res) => {
     } else if (req.url.indexOf("/beatIn") !== -1) {
         let beat = parseInt(req.url.split("?")[1]);
 
+        console.log("beatIn", beat);
+
         // Check if beat in range
 
         if (beat >= 0 && beat <= 7) {
-            console.log(beat);
             users[user].beat.push(beat);
         }
     } else if (req.url.indexOf("/beatOut") !== -1) {
