@@ -28,7 +28,7 @@ button {
   -webkit-appearance: none;
 }
 
-button:focus {
+button:focus, [role="button"]:focus {
   transform: scale(1.2);
 }
 
@@ -83,11 +83,13 @@ button:focus {
   position: relative;
   width: 240px;
   display: flex;
+  flex-basis: 100%;
 }
 
-.beatstrip div, .arrows div, .keyboard  div {
+.beat,
+.arrow,
+.key {
   flex: 1;
-  flex-basis: 100%;
 }
 
 .beat {
@@ -97,7 +99,6 @@ button:focus {
   border-color: black;
   border-width: 1px;
   opacity: 0.8;
-  min-width: 100%;
 }
 
 .beat[data-current="true"] {
@@ -114,7 +115,6 @@ button:focus {
   border-width: 1px;
   border-color: black;
   position: relative;
-  min-width: 100%;
 }
 
 .key.white {
@@ -135,7 +135,6 @@ button:focus {
   background-color: black;
   color: white;
   font-size: 4em;
-  min-width: 100%;
 }
 
 #start {
