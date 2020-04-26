@@ -1,7 +1,8 @@
 let you;
 
 let currentBeat = 0;
-let tempo = 500;
+let tempo = 1000;
+let grid = [];
 
 // Note mapping in sharp format
 
@@ -54,28 +55,26 @@ let frequencyMapping = {
 let mapping = noteMappingSharps;
 
 let generateGrid = function() {
-    // Clear grid each time to make this easy
-
-    document.getElementById("wrapper").innerHTML = "";
 
     let size = 12;
 
-    let row = 0;
+    for (let row = 0; row < size; row += 1) {
 
-    for (let i = 0; i < size * size; i += 1) {
-        // Increment rows
+        grid.push([]);
 
-        if (i > 1 && i % size === 0) {
-            row += 1;
+        for (let column = 0; column < size; column += 1) {
+
+            let box = document.createElement("div");
+            box.setAttribute("class", "box");
+            box.setAttribute("data-column", column);
+            box.setAttribute("data-row", row);
+            document.getElementById("wrapper").insertAdjacentElement("beforeend", box);
+
+            grid[row][column] = box;
+
         }
-
-        let box = document.createElement("div");
-        box.setAttribute("class", "box");
-        box.setAttribute("data-location", i);
-        box.setAttribute("data-column", i % size);
-        box.setAttribute("data-row", row);
-        document.getElementById("wrapper").insertAdjacentElement("beforeend", box);
     }
+
 };
 
 let makeRequest = url => {
@@ -84,25 +83,51 @@ let makeRequest = url => {
 
 let refresh = function() {
 
-    generateGrid();
+    // Store occupied locations so we can clear the rest
 
-    // Get status
+    let occupied = [];
 
     makeRequest("/status").then(data => {
 
         let users = data.users;
+
+        data.linked.forEach((linked) => {
+
+            let note = linked.note;
+
+            linked.beat.forEach((beat) => {
+
+                playNote(note, beat);
+
+            })
+
+        });
+
         you = users[data.you];
 
         for (let user in users) {
+
             user = users[user];
 
-            document.querySelector(`[data-location="${user.location}"]`).innerHTML =
+            // Find element in lookup matrix
+
+            let row = user.location[0];
+            let column = user.location[1];
+
+            let location = grid[row][column];
+
+            // Clear attributes
+
+            location.removeAttribute("data-you");
+            location.removeAttribute("data-playing");
+
+            occupied.push(location);
+
+            location.innerHTML =
                 mapping[user.note];
 
             if (user.id === you.id) {
-                document
-                    .querySelector(`[data-location="${user.location}"]`)
-                    .setAttribute("data-you", "true");
+                location.setAttribute("data-you", "true");
             }
         }
 
@@ -131,81 +156,58 @@ let refresh = function() {
 
         });
 
-        // Get your adjacent users
+        // Clear all unused locations
 
-        let linked = getLinked(users);
+        document.querySelectorAll(".box").forEach((e) => {
 
-        // Filter out the notes that don't share the current beat
+            if (occupied.indexOf(e) === -1) {
 
-        let play = linked.filter((u) => u.beat.indexOf(currentBeat) !== -1);
+                e.removeAttribute("data-you");
+                e.removeAttribute("data-playing");
+                e.innerHTML = "";
 
-        if (play.length) {
-            play.forEach((n, i) => {
-                // Light up square
+            }
 
-                let square = document
-                    .querySelector(`[data-location="${n.location}"`)
-                    .setAttribute("data-playing", "true");
+        })
 
-                playNote(n.note, i);
-            });
-        }
-
-        // Increment current beat
-
-        currentBeat += 1;
-
-        if (currentBeat >= 8) {
-            currentBeat = 0;
-        }
     });
 };
 
 // Move current user to a square
 
-let move = function(position) {
-    makeRequest("/move?" + position);
+let move = function(row, column) {
+    makeRequest("/move?" + row + "-" + column);
 };
 
 let moveDirection = direction => {
-    let yourSquare = document.querySelector("[data-you]");
 
-    if (!yourSquare) {
-        return false;
-    }
+    let yourRow = you.location[0];
+    let yourColumn = you.location[1];
 
-    let yourRow = parseInt(yourSquare.getAttribute("data-row"));
-    let yourColumn = parseInt(yourSquare.getAttribute("data-column"));
-
-    let targetRow = yourRow;
-    let targetColumn = yourColumn;
+    let targetRow;
+    let targetColumn;
 
     switch (direction) {
         case "up":
-            targetRow -= 1;
+            targetColumn = yourColumn;
+            targetRow = yourRow - 1;
             break;
         case "down":
-            targetRow += 1;
+            targetColumn = yourColumn;
+            targetRow = yourRow + 1;
             break;
         case "left":
-            targetColumn -= 1;
+            targetRow = yourRow;
+            targetColumn = yourColumn - 1;
             break;
         case "right":
-            targetColumn += 1;
+            targetRow = yourRow;
+            targetColumn = yourColumn + 1;
             break;
     }
 
-    let target = document.querySelector(
-        `[data-row="${targetRow}"][data-column="${targetColumn}"]`
-    );
+    move(targetRow, targetColumn);
 
-    // Check if target exists
-
-    if (target) {
-        let position = target.getAttribute("data-location");
-
-        move(position);
-    }
 };
 
 // Map arrow buttons to move directions
@@ -276,91 +278,48 @@ let beat = function(beatNumber, on) {
 
 };
 
-// Function for checking if your square is surrounded by any others
-
-let getLinked = users => {
-    let yourSquare = document.querySelector("[data-you]");
-
-    if (!yourSquare) {
-        return false;
-    }
-
-    let yourRow = parseInt(yourSquare.getAttribute("data-row"));
-    let yourColumn = parseInt(yourSquare.getAttribute("data-column"));
-
-    let notes = [];
-
-    for (let userID in users) {
-        let user = users[userID];
-        let square = document.querySelector(`[data-location="${user.location}"]`);
-
-        let userRow = parseInt(square.getAttribute("data-row"));
-        let userColumn = parseInt(square.getAttribute("data-column"));
-
-        // First check if in same row or adjacent rows
-
-        if (
-            userRow === yourRow ||
-            userRow === yourRow - 1 ||
-            userRow === yourRow + 1
-        ) {
-            // Then check adjacent columns
-
-            if (
-                userColumn === yourColumn ||
-                userColumn === yourColumn - 1 ||
-                userColumn === yourColumn + 1
-            ) {
-                notes.push({
-                    note: user.note,
-                    beat: user.beat,
-                    location: user.location
-                });
-            }
-        }
-    }
-
-    return notes;
-};
-
 let start = () => {
+
+    // Hide start button
     document.getElementById("start").style.display = "none";
+
+    // Generate grid and lookup matrix
+
+    generateGrid();
 
     // Tempo
     window.setInterval(refresh, tempo);
 
-    // Audio stuff
-
-    window.oscillators = [];
-
-    // Generate 9 oscillators as that's the maximum we'll use
-
     // create web audio api context
     window.audioCtx = new(window.AudioContext || window.webkitAudioContext)();
 
-    for (let i = 0; i <= 9; i += 1) {
-        // create Oscillator node
-        let oscillator = audioCtx.createOscillator();
-
-        oscillator.type = "sine";
-        oscillator.connect(audioCtx.destination);
-
-        oscillators.push(oscillator);
-
-        oscillator.frequency.setValueAtTime(0, audioCtx.currentTime);
-
-        oscillator.start();
-    }
 };
 
-let playNote = (note, osc) => {
+let playNote = (note, beat) => {
 
-    let oscillator = oscillators[osc];
+    console.log(note, beat);
+
+    // Calculate the time for one sequence of all beats
+    let sequenceTimeSeconds = tempo / 1000;
+
+    let oneBeat = sequenceTimeSeconds / 8;
+
+    let oscillator = audioCtx.createOscillator();
+
+    oscillator.type = "sine";
+    oscillator.connect(audioCtx.destination);
 
     let frequency = frequencyMapping[note];
 
-    oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+    let noteStart = oneBeat * beat;
 
-    oscillator.frequency.setValueAtTime(0, audioCtx.currentTime + (tempo / 1000));
+    let beatStart = audioCtx.currentTime + noteStart;
+    let beatEnd = audioCtx.currentTime + noteStart + 0.1;
+
+    oscillator.start(beatStart);
+
+    oscillator.frequency.setValueAtTime(frequency, beatStart);
+
+    oscillator.stop(beatEnd);
 
 };

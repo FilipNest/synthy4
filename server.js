@@ -8,28 +8,149 @@ const users = {};
 
 const gridSize = 12;
 
+// Build matrix (sorry)
+
+let grid = [];
+
+for (let row = 0; row <= gridSize; row += 1) {
+
+    grid.push(Array.from(new Array(gridSize)).fill(null));
+
+}
+
+// Function for checking if a point is within the grid bounds
+
+let inGrid = (row, column) => {
+
+    return !(typeof grid[row] === "undefined" || typeof grid[row][column] === "undefined");
+
+}
+
+// Find all occupied locations touching the specified one
+let getAdjacent = (row, column) => {
+
+    let adjacentOccupied = new Set();
+
+    // Do this the long way but I'm sure there's a better algorithm
+
+    let lookup = [];
+
+    // Populate lookup array with possible locations
+
+    lookup.push(
+        [row - 1, column], [row + 1, column], [row, column - 1], [row, column + 1], [row - 1, column - 1], [row + 1, column + 1], [row - 1, column + 1], [row + 1, column - 1]
+    );
+
+    // Add self
+
+    lookup.push([row, column]);
+
+    lookup.forEach((coords) => {
+
+        let row = coords[0];
+        let column = coords[1];
+
+        if (!inGrid(row, column)) {
+
+            return;
+
+        }
+
+        // Check if occupied
+
+        if (grid[row][column]) {
+
+            adjacentOccupied.add(grid[row][column]);
+
+        }
+
+    })
+
+    return adjacentOccupied;
+
+}
+
+// Get all connected users
+
+let getAllConnected = (row, column) => {
+
+    // keep log of checked middle areas so as not to loop forever
+    // Store as strings for easy checking
+
+    let checked = new Set();
+    let allConnected = new Set();
+
+    let connected = (row, column) => {
+
+        let adjacentOccupied = Array.from(getAdjacent(row, column));
+
+        // Filter to see if already checked
+        let toCheck = adjacentOccupied.filter((i) => {
+
+            let stringKey = JSON.stringify(i.location);
+
+            return !checked.has(stringKey);
+
+        });
+
+        let merged = new Set([...allConnected, ...toCheck]);
+
+        allConnected = merged;
+
+        toCheck.forEach((i) => {
+
+            checked.add(JSON.stringify(i.location));
+
+            connected(i.location[0], i.location[1]);
+
+        });
+
+    };
+
+    connected(row, column);
+
+    return allConnected;
+
+}
+
+
 const maxGrid = gridSize * gridSize;
 
 // Function to place a user in a grid square
 
-const placeUser = (user, location) => {
-    // Don't allow user to be placed off-grid
+const placeUser = (user, row, column) => {
 
-    if (location > maxGrid) {
+    // Abort if location is off grid
+
+    if (!inGrid(row, column)) {
+
         return false;
+
+    } else {
+
+        location = grid[row][column];
+
     }
 
-    // Check if a user already occupies that grid
+    // Check if a user already occupies that location
 
-    let occupied = Object.values(users).some(u => u.location === location);
+    if (location !== null) {
 
-    if (!occupied) {
-        user.location = location;
+        return false;
+
+    } else {
+
+        user.location = [row, column]
+        grid[row][column] = user;
         return true;
+
     }
+
 };
 
-function parseCookies(request) {
+// Quick function to parse cookies (StackOverflow #3393854)
+
+let parseCookies = (request) => {
     var list = {},
         rc = request.headers.cookie;
 
@@ -46,22 +167,21 @@ const server = http.createServer((req, res) => {
 
     // Get cookies to determine if session
 
-    let cookies = parseCookies(req);
-    let user;
+    let user = parseCookies(req)["grid-user"];
 
-    if (!cookies["grid-user"]) {
+    if (!user) {
+
         const id = crypto.randomBytes(16).toString("hex");
 
         res.setHeader("Set-Cookie", "grid-user=" + id);
 
         user = id;
-    } else {
-        user = cookies["grid-user"];
     }
 
     // Check if user is in user list and add them if they are not
 
     if (!users[user]) {
+
         // Check if the maximum number of users has been reached
 
         if (Object.keys(users).length >= maxGrid) {
@@ -73,16 +193,26 @@ const server = http.createServer((req, res) => {
         users[user] = {
             id: user,
             note: 0,
-            beat: new Set([0, 2, 4, 6])
+            // beat: new Set([0, 2, 4, 6])
+            beat: new Set([0])
         };
 
         // Get first available location
 
-        for (let i = 0; i <= maxGrid; i += 1) {
-            if (placeUser(users[user], i)) {
+        for (let row = 0; row <= gridSize; row += 1) {
+
+            let empty = grid[row].findIndex((l) => l === null);
+
+            if (empty !== -1) {
+
+                grid[row][empty] = users[user];
+                users[user].location = [row, empty];
                 break;
+
             }
+
         }
+
     }
 
     // Pop inactivity back to 0
@@ -95,9 +225,13 @@ const server = http.createServer((req, res) => {
 
         res.setHeader("Content-Type", "application/json");
 
-        let output = JSON.stringify({ users: users, you: user }, (key, value) => {
+        // Get linked occupied places
 
-            if (key === "beat") {
+        let linked = getAllConnected(users[user].location[0], users[user].location[1]);
+
+        let output = JSON.stringify({ users: users, you: user, linked: linked }, (key, value) => {
+
+            if (value instanceof Set) {
 
                 return Array.from(value)
 
@@ -120,16 +254,38 @@ const server = http.createServer((req, res) => {
 
         res.end(file);
     } else if (req.url.indexOf("/move") !== -1) {
+
+        let previousRow = users[user].location[0];
+        let previousColumn = users[user].location[1];
+
         let position = req.url.split("?")[1];
 
-        if (placeUser(users[user], position)) {
+        if (!position) {
+
+            return false;
+
+        }
+
+        let coords = position.split("-");
+
+        let row = parseInt(coords[0]);
+        let column = parseInt(coords[1]);
+
+        if (placeUser(users[user], row, column)) {
+
+            // Clear previous location
+
+            grid[previousRow][previousColumn] = null;
+
             res.end(JSON.stringify(true));
+
         } else {
             // Position not available
 
             res.statusCode = 400;
             res.end(JSON.stringify(false));
         }
+
     } else if (req.url.indexOf("/note") !== -1) {
         let note = parseInt(req.url.split("?")[1]);
 
