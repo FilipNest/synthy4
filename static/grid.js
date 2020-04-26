@@ -36,6 +36,23 @@ let noteMappingFlats = {
     11: "B"
 };
 
+// Via Scriabin
+
+let noteColours = {
+    0: "#ff0000",
+    1: "#cf9bff",
+    2: "#ffff00",
+    3: "#65659a",
+    4: "#e4fbff",
+    5: "#ae1600",
+    6: "#00cdff",
+    7: "#ff6500",
+    8: "#ff00ff",
+    9: "#2fcd30",
+    10: "#8d8b8d",
+    11: "#0000fe"
+}
+
 let frequencyMapping = {
     0: 261.63,
     1: 277.18,
@@ -97,7 +114,7 @@ let refresh = function() {
 
             linked.beat.forEach((beat) => {
 
-                playNote(note, beat);
+                playNote(note, beat, linked.location);
 
             })
 
@@ -119,7 +136,6 @@ let refresh = function() {
             // Clear attributes
 
             location.removeAttribute("data-you");
-            location.removeAttribute("data-playing");
 
             occupied.push(location);
 
@@ -163,7 +179,6 @@ let refresh = function() {
             if (occupied.indexOf(e) === -1) {
 
                 e.removeAttribute("data-you");
-                e.removeAttribute("data-playing");
                 e.innerHTML = "";
 
             }
@@ -295,7 +310,7 @@ let start = () => {
 
 };
 
-let playNote = (note, beat) => {
+let playNote = (note, beat, location) => {
 
     // Calculate the time for one sequence of all beats
     let sequenceTimeSeconds = tempo / 1000;
@@ -319,5 +334,25 @@ let playNote = (note, beat) => {
     oscillator.frequency.setValueAtTime(frequency, beatStart);
 
     oscillator.stop(beatEnd);
+
+    // Light up note
+
+    let row = location[0];
+    let column = location[1];
+
+    window.setTimeout(() => {
+
+        let box = grid[row][column];
+
+        box.style.backgroundColor = noteColours[note];
+
+        window.setTimeout(() => {
+
+            let box = grid[row][column];
+            box.style.backgroundColor = "";
+
+        }, 100);
+
+    }, noteStart * 1000);
 
 };
