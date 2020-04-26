@@ -318,22 +318,39 @@ let playNote = (note, beat, location) => {
     let oneBeat = sequenceTimeSeconds / 8;
 
     let oscillator = audioCtx.createOscillator();
+    oscillator.type = "sawtooth";
 
-    oscillator.type = "sine";
-    oscillator.connect(audioCtx.destination);
+    let gain = audioCtx.createGain();
+
+    oscillator.connect(gain);
+
+    gain.connect(audioCtx.destination);
+
+    gain.gain.value = 0;
 
     let frequency = frequencyMapping[note];
 
     let noteStart = oneBeat * beat;
 
+    let noteEnd = oneBeat * (beat + 1);
+
+    // Use percentages for envelope
+
+    let attack = oneBeat / 3;
+    let release = oneBeat / 4;
+
     let beatStart = audioCtx.currentTime + noteStart;
-    let beatEnd = audioCtx.currentTime + noteStart + 0.1;
+    let beatEnd = audioCtx.currentTime + noteEnd;
 
     oscillator.start(beatStart);
 
+    gain.gain.linearRampToValueAtTime(1, beatStart + attack);
+    gain.gain.linearRampToValueAtTime(0, beatStart + attack + release);
+
     oscillator.frequency.setValueAtTime(frequency, beatStart);
 
-    oscillator.stop(beatEnd);
+    // Stop oscillator when finished
+    oscillator.stop(beatStart + attack + release);
 
     // Light up note
 
