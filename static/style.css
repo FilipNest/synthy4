@@ -2,7 +2,6 @@
   box-sizing: border-box;
   font-family: monospace;
   text-align: center;
-  max-width: 100%;
 }
 
 html,
@@ -26,6 +25,7 @@ body {
 
 button {
   border-style: none;
+  -webkit-appearance: none;
 }
 
 button:focus {
@@ -88,7 +88,6 @@ button:focus {
 .beat,
 .arrow,
 .key {
-  flex-basis: auto;
   flex: 1;
 }
 
