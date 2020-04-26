@@ -25,10 +25,11 @@ body {
 
 button {
   border-style: none;
+  min-width: 0;
   -webkit-appearance: none;
 }
 
-button:focus, [role="button"]:focus {
+button:focus {
   transform: scale(1.2);
 }
 
@@ -84,12 +85,14 @@ button:focus, [role="button"]:focus {
   width: 240px;
   display: flex;
   flex-basis: 100%;
+  align-items: flex-end;
 }
 
 .beat,
 .arrow,
 .key {
-  flex: 1;
+    flex-grow: 1;
+  display: inline-block
 }
 
 .beat {
