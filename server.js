@@ -327,6 +327,8 @@ setInterval(() => {
         userObject.inactive += 1;
 
         if (userObject.inactive > 10) {
+            // Remove from grid and delete user
+            grid[userObject.location[0]][userObject.location[1]] = null;
             delete users[userID];
         }
     }
