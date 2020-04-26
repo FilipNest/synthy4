@@ -201,6 +201,20 @@ let moveDirection = direction => {
   move(targetRow, targetColumn);
 };
 
+// UGH - Safari does weird things with button elements and flexbox that I can't work out and I want them for accessibility so...
+
+let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+if(iOS){
+  
+  document.querySelectorAll(".controls button").forEach((b) => {
+    
+    b.outerHTML = b.outerHTML.split("button").join("div");
+    
+  })
+  
+}
+
 // Map arrow buttons to move directions
 
 document.querySelectorAll(".arrow").forEach(a => {
