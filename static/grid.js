@@ -297,8 +297,6 @@ let start = () => {
 
 let playNote = (note, beat) => {
 
-    console.log(note, beat);
-
     // Calculate the time for one sequence of all beats
     let sequenceTimeSeconds = tempo / 1000;
 
