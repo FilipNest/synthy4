@@ -229,7 +229,31 @@ const server = http.createServer((req, res) => {
 
         let linked = getAllConnected(users[user].location[0], users[user].location[1]);
 
-        let output = JSON.stringify({ users: users, you: user, linked: linked }, (key, value) => {
+        // Split linked into beats so we can get each beat's colours
+
+        let beatNotes = [];
+
+        linked.forEach((u) => {
+
+            for (let b = 0; b < 8; b += 1) {
+
+                if (!beatNotes[b]) {
+
+                    beatNotes[b] = [];
+
+                }
+
+                if (u.beat.has(b)) {
+
+                    beatNotes[b].push(u);
+
+                }
+
+            }
+
+        })
+
+        let output = JSON.stringify({ users: users, you: user, linked: linked, beatNotes: beatNotes }, (key, value) => {
 
             if (value instanceof Set) {
 
@@ -303,14 +327,18 @@ const server = http.createServer((req, res) => {
             users[user].beat.add(beat);
         }
 
+        res.end(JSON.stringify(Array.from(users[user].beat)));
+
     } else if (req.url.indexOf("/beatOut") !== -1) {
         let beat = parseInt(req.url.split("?")[1]);
 
-        // Check if note in range
+        // Check if beat in range
 
         if (beat >= 0 && beat <= 7) {
             users[user].beat.delete(beat);
         }
+
+        res.end(JSON.stringify(Array.from(users[user].beat)));
 
     } else {
         res.statusCode = 404;

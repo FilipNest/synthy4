@@ -1,16 +1,54 @@
 * {
     box-sizing: border-box;
+    font-family: monospace;
+    text-align: center;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+main {
+    width: 240px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: auto;
 }
 
 body {
     font-family: sans-serif;
     font-weight: bold;
-    background-color: #F58CFF;
+    background-repeat: no-repeat;
+}
+
+button {
+    border-style: none;
+}
+
+button:focus {
+    transform: scale(1.2);
+}
+
+#start,
+#intro {
+    display: none;
+}
+
+[data-holding] #start,
+[data-holding] #intro {
+    display: block;
+}
+
+[data-holding] .controls,
+[data-holding] .wrapper {
+    display: none;
 }
 
 .controls,
 .wrapper {
-    width: 240px;
+    width: 100%;
     margin: auto;
 }
 
@@ -38,12 +76,6 @@ body {
     border-color: black;
 }
 
-.box[data-playing] {
-    background-color: #75D5FF;
-    color: white;
-    border-color: black;
-}
-
 .beatstrip,
 .keyboard,
 .arrows {
@@ -64,6 +96,11 @@ body {
     border-style: solid;
     border-color: black;
     border-width: 1px;
+    opacity: 0.8;
+}
+
+.beat[data-current="true"] {
+    opacity: 1;
 }
 
 .beat[data-selected="true"] {
@@ -94,7 +131,7 @@ body {
 
 .arrow {
     background-color: black;
-    color: #D4FFB0;
+    color: white;
     font-size: 4em;
     display: flex;
     justify-content: center;

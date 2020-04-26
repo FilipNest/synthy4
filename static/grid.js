@@ -1,8 +1,11 @@
 let you;
 
-let currentBeat = 0;
-let tempo = 1000;
+let currentBeat;
+let tempo = 2000;
 let grid = [];
+
+// Flag for initialisation information
+let started;
 
 // Note mapping in sharp format
 
@@ -51,7 +54,7 @@ let noteColours = {
     9: "#2fcd30",
     10: "#8d8b8d",
     11: "#0000fe"
-}
+};
 
 let frequencyMapping = {
     0: 261.63,
@@ -72,58 +75,54 @@ let frequencyMapping = {
 let mapping = noteMappingSharps;
 
 let generateGrid = function() {
-
     let size = 12;
 
     for (let row = 0; row < size; row += 1) {
-
         grid.push([]);
 
         for (let column = 0; column < size; column += 1) {
-
             let box = document.createElement("div");
             box.setAttribute("class", "box");
-            box.setAttribute("data-column", column);
-            box.setAttribute("data-row", row);
-            document.getElementById("wrapper").insertAdjacentElement("beforeend", box);
+            document
+                .getElementById("wrapper")
+                .insertAdjacentElement("beforeend", box);
 
             grid[row][column] = box;
-
         }
     }
-
 };
 
 let makeRequest = url => {
     return fetch(new Request(url)).then(response => response.json());
 };
 
-let refresh = function() {
+// Store of linked users' notes per beat
 
+let linkedBeatNotes = [];
+
+let playNotes = () => {
+
+    linkedBeatNotes.forEach((notes, beat) => {
+
+        playBeat(beat, notes);
+
+    });
+};
+
+let refresh = function() {
     // Store occupied locations so we can clear the rest
 
     let occupied = [];
 
     makeRequest("/status").then(data => {
 
+        linkedBeatNotes = data.beatNotes;
+
         let users = data.users;
-
-        data.linked.forEach((linked) => {
-
-            let note = linked.note;
-
-            linked.beat.forEach((beat) => {
-
-                playNote(note, beat, linked.location);
-
-            })
-
-        });
 
         you = users[data.you];
 
         for (let user in users) {
-
             user = users[user];
 
             // Find element in lookup matrix
@@ -133,58 +132,37 @@ let refresh = function() {
 
             let location = grid[row][column];
 
-            // Clear attributes
+            // Clear you attribute in case you were previously in that square
 
             location.removeAttribute("data-you");
 
             occupied.push(location);
 
-            location.innerHTML =
-                mapping[user.note];
+            location.innerHTML = mapping[user.note];
 
             if (user.id === you.id) {
                 location.setAttribute("data-you", "true");
             }
         }
 
-        // Highlight the user's selected note
-
-        document.querySelectorAll("[data-note]").forEach(k => {
-            let keyNote = parseInt(k.getAttribute("data-note"));
-
-            if (keyNote === you.note) {
-                k.setAttribute("data-selected", "true");
-            } else {
-                k.setAttribute("data-selected", "false");
-            }
-        });
-
-        // Highlight the user's selected beats
-
-        document.querySelectorAll("[data-beat]").forEach(b => {
-            let beat = parseInt(b.getAttribute("data-beat"));
-
-            if (you.beat.indexOf(beat) !== -1) {
-                b.setAttribute("data-selected", "true");
-            } else {
-                b.setAttribute("data-selected", "false");
-            }
-
-        });
-
         // Clear all unused locations
 
-        document.querySelectorAll(".box").forEach((e) => {
-
+        document.querySelectorAll(".box").forEach(e => {
             if (occupied.indexOf(e) === -1) {
-
                 e.removeAttribute("data-you");
                 e.innerHTML = "";
-
             }
+        });
 
-        })
+        // Add starting note and beat if not set already
 
+        if (!started) {
+            changeNote(you.note.toString());
+
+            setBeat(you.beat);
+
+            started = true;
+        }
     });
 };
 
@@ -195,7 +173,6 @@ let move = function(row, column) {
 };
 
 let moveDirection = direction => {
-
     let yourRow = you.location[0];
     let yourColumn = you.location[1];
 
@@ -222,7 +199,6 @@ let moveDirection = direction => {
     }
 
     move(targetRow, targetColumn);
-
 };
 
 // Map arrow buttons to move directions
@@ -256,8 +232,25 @@ document.addEventListener("keydown", function(event) {
 
 // Make note change request
 
-let note = function(noteNumber) {
+let note = noteNumber => {
     makeRequest("/note?" + noteNumber);
+
+    // Highlight the user's selected note.
+    // Can change to this straight away as nothing blocks it
+
+    changeNote(noteNumber.toString());
+};
+
+let changeNote = noteNumber => {
+    document.querySelectorAll("[data-note]").forEach(k => {
+        let keyNote = k.getAttribute("data-note");
+
+        if (keyNote === noteNumber) {
+            k.setAttribute("data-selected", "true");
+        } else {
+            k.setAttribute("data-selected", "false");
+        }
+    });
 };
 
 // Map note keys to notes
@@ -284,19 +277,39 @@ document.querySelectorAll("[data-beat]").forEach(b => {
 // Make beat change request
 
 let beat = function(beatNumber, on) {
+    let request;
 
     if (on) {
-        makeRequest("/beatIn?" + beatNumber);
+        request = "/beatIn";
     } else {
-        makeRequest("/beatOut?" + beatNumber);
-    };
+        request = "/beatOut";
+    }
 
+    makeRequest(request + "?" + beatNumber).then(result => {
+        setBeat(result);
+    });
+};
+
+let setBeat = beatList => {
+
+    // Highlight the user's selected beats
+
+    document.querySelectorAll("[data-beat]").forEach(b => {
+        let beat = parseInt(b.getAttribute("data-beat"));
+
+        if (beatList.indexOf(beat) !== -1) {
+            b.setAttribute("data-selected", "true");
+        } else {
+            b.setAttribute("data-selected", "false");
+        }
+    });
 };
 
 let start = () => {
 
-    // Hide start button
-    document.getElementById("start").style.display = "none";
+    // Hide holding screen
+
+    document.body.removeAttribute("data-holding");
 
     // Generate grid and lookup matrix
 
@@ -305,26 +318,57 @@ let start = () => {
     // Tempo
     window.setInterval(refresh, tempo);
 
+    // Delay playback loop so that new beats can catch up
+    window.setTimeout(() => {
+
+        window.setInterval(playNotes, tempo);
+
+    }, tempo / 2);
+
     // create web audio api context
     window.audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-
 };
 
-let playNote = (note, beat, location) => {
+let playBeat = (beat, beatNotes) => {
 
+    //  Get all notes in beat for background colours
+
+    let notes = beatNotes.map(u => {
+
+        return noteColours[u.note];
+
+    })
+
+    let background = "";
+
+    if (notes.length) {
+
+        background = "radial-gradient(circle, " + notes.join(", ") + ", black)";
+
+    }
+
+    beatNotes.forEach((b, i) => {
+
+        playNote(b.note, beat, b.location, background);
+
+    })
+
+}
+
+let playNote = (note, beat, location, background) => {
     // Calculate the time for one sequence of all beats
     let sequenceTimeSeconds = tempo / 1000;
 
     let oneBeat = sequenceTimeSeconds / 8;
 
-    let oscillator = audioCtx.createOscillator();
+    let oscillator = window.audioCtx.createOscillator();
     oscillator.type = "sawtooth";
 
-    let gain = audioCtx.createGain();
+    let gain = window.audioCtx.createGain();
 
     oscillator.connect(gain);
 
-    gain.connect(audioCtx.destination);
+    gain.connect(window.audioCtx.destination);
 
     gain.gain.value = 0;
 
@@ -339,8 +383,8 @@ let playNote = (note, beat, location) => {
     let attack = oneBeat / 3;
     let release = oneBeat / 4;
 
-    let beatStart = audioCtx.currentTime + noteStart;
-    let beatEnd = audioCtx.currentTime + noteEnd;
+    let beatStart = window.audioCtx.currentTime + noteStart;
+    let beatEnd = window.audioCtx.currentTime + noteEnd;
 
     oscillator.start(beatStart);
 
@@ -359,17 +403,30 @@ let playNote = (note, beat, location) => {
 
     window.setTimeout(() => {
 
+        // Increment current beat for highlighting
+        if (currentBeat !== beat) {
+
+            currentBeat = beat;
+
+        }
+
+        document.querySelector(`[data-beat="${currentBeat}"]`).setAttribute("data-current", "true");
+
+
         let box = grid[row][column];
 
         box.style.backgroundColor = noteColours[note];
+        document.body.style.backgroundImage = background;
 
         window.setTimeout(() => {
 
-            let box = grid[row][column];
             box.style.backgroundColor = "";
+            document.querySelector(`[data-beat="${currentBeat}"]`).removeAttribute("data-current");
 
         }, 100);
 
     }, noteStart * 1000);
 
 };
+
+document.getElementById("start").onclick = start;
