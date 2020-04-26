@@ -81,14 +81,15 @@ button:focus {
 .keyboard,
 .arrows {
   position: relative;
-  display: flex;
   width: 240px;
+  display: flex;
 }
 
 .beat,
 .arrow,
 .key {
-  flex:1;
+  flex: 1;
+  flex-basis: 100%;
 }
 
 .beat {
@@ -134,7 +135,6 @@ button:focus {
   background-color: black;
   color: white;
   font-size: 4em;
-  max-width: calc(240px / 4);
 }
 
 #start {
