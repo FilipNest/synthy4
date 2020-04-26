@@ -85,9 +85,7 @@ button:focus {
   display: flex;
 }
 
-.beat,
-.arrow,
-.key {
+.beatstrip div, .arrows div, .keyboard  div {
   flex: 1;
   flex-basis: 100%;
 }
@@ -99,6 +97,7 @@ button:focus {
   border-color: black;
   border-width: 1px;
   opacity: 0.8;
+  min-width: 100%;
 }
 
 .beat[data-current="true"] {
@@ -115,6 +114,7 @@ button:focus {
   border-width: 1px;
   border-color: black;
   position: relative;
+  min-width: 100%;
 }
 
 .key.white {
@@ -135,6 +135,7 @@ button:focus {
   background-color: black;
   color: white;
   font-size: 4em;
+  min-width: 100%;
 }
 
 #start {

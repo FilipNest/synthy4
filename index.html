@@ -1,72 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Musical Grid</title>
     <link rel="stylesheet" href="/static/style.css" />
-  </head>
+</head>
 
-  <body data-holding="true">
+<body data-holding="true">
     <main>
-      
-      <div id="intro">
-        
-        <h1>
-          Synth 4* by FilipNest
-        </h1>
-        <h2>
-          A collaborative multiplayer grid synthesizer
-        </h2>
-        <p>
-          Squares touching other squares play together. Pick a beat, pick a note. Move around to join some others. Enjoy the colours (<a href="https://en.wikipedia.org/wiki/Clavier_%C3%A0_lumi%C3%A8res">thanks Scriabin</a>). If it's lonely in here you can open different browsers (recommend muting all but one) and play. 
-        </p>
-        <p>
-          <small>*in 2015 I made a similar multiplayer synth called Synthy. Then two more which never got to a fully releasable stage. But Synthy 4 it is. <a href="https://glitch.com/~filipnest-synthy4">Thanks Glitch!</a></small>
-        </p>
-        
-      </div>
-      
-      <button id="start">♫</button>
 
-      <div id="wrapper" class="wrapper"></div>
+        <div id="intro">
 
-      <div class="controls">
-        <div class="arrows">
-          <button data-direction="up" class="arrow up">&uArr;</button>
-          <button data-direction="down" class="arrow bottom">&dArr;</button>
-          <button data-direction="left" class="arrow left">&lArr;</button>
-          <button data-direction="right" class="arrow right">&rArr;</button>
+            <h1>
+                Synth 4* by FilipNest
+            </h1>
+            <h2>
+                A collaborative multiplayer grid synthesizer
+            </h2>
+            <p>
+                Squares touching other squares play together. Pick a beat, pick a note. Move around to join some others. Enjoy the colours (<a href="https://en.wikipedia.org/wiki/Clavier_%C3%A0_lumi%C3%A8res">thanks Scriabin</a>). If it's lonely in here
+                you can open different browsers (recommend muting all but one) and play.
+            </p>
+            <p>
+                <small>*in 2015 I made a similar multiplayer synth called Synthy. Then two more which never got to a fully releasable stage. But Synthy 4 it is. <a href="https://glitch.com/~filipnest-synthy4">Thanks Glitch!</a></small>
+            </p>
+
         </div>
 
-        <div class="beatstrip">
-          <button title="beat1" data-beat="0" class="beat"></button>
-          <button title="beat2" data-beat="1" class="beat"></button>
-          <button title="beat3" data-beat="2" class="beat"></button>
-          <button title="beat4" data-beat="3" class="beat"></button>
-          <button title="beat5" data-beat="4" class="beat"></button>
-          <button title="beat6" data-beat="5" class="beat"></button>
-          <button title="beat7" data-beat="6" class="beat"></button>
-          <button title="beat8" data-beat="7" class="beat"></button>
-        </div>
+        <button id="start">♫</button>
 
-        <div class="keyboard">
-          <button title="C" data-note="0" class="key white"></button>
-          <button title="C#" data-note="1" class="key black"></button>
-          <button title="D" data-note="2" class="key white"></button>
-          <button title="D#" data-note="3" class="key black"></button>
-          <button title="E" data-note="4" class="key white"></button>
-          <button title="F" data-note="5" class="key white"></button>
-          <button title="F#" data-note="6" class="key black"></button>
-          <button title="G" data-note="7" class="key white"></button>
-          <button title="G#" data-note="8" class="key black"></button>
-          <button title="A" data-note="9" class="key white"></button>
-          <button title="A#" data-note="10" class="key black"></button>
-          <button title="B" data-note="11" class="key white"></button>
+        <div id="wrapper" class="wrapper"></div>
+
+        <div class="controls">
+            <div class="arrows">
+                <div><button data-direction="up" class="arrow up">&uArr;</button></div>
+                <div><button data-direction="down" class="arrow bottom">&dArr;</button></div>
+                <div><button data-direction="left" class="arrow left">&lArr;</button></div>
+                <div><button data-direction="right" class="arrow right">&rArr;</button></div>
+            </div>
+
+            <div class="beatstrip">
+                <div><button title="beat1" data-beat="0" class="beat"></button></div>
+                <div><button title="beat2" data-beat="1" class="beat"></button></div>
+                <div><button title="beat3" data-beat="2" class="beat"></button></div>
+                <div><button title="beat4" data-beat="3" class="beat"></button></div>
+                <div><button title="beat5" data-beat="4" class="beat"></button></div>
+                <div><button title="beat6" data-beat="5" class="beat"></button></div>
+                <div><button title="beat7" data-beat="6" class="beat"></button></div>
+                <div><button title="beat8" data-beat="7" class="beat"></button></div>
+            </div>
+
+            <div class="keyboard">
+                <div><button title="C" data-note="0" class="key white"></button></div>
+                <div><button title="C#" data-note="1" class="key black"></button></div>
+                <div><button title="D" data-note="2" class="key white"></button></div>
+                <div><button title="D#" data-note="3" class="key black"></button></div>
+                <div><button title="E" data-note="4" class="key white"></button></div>
+                <div><button title="F" data-note="5" class="key white"></button></div>
+                <div><button title="F#" data-note="6" class="key black"></button></div>
+                <div><button title="G" data-note="7" class="key white"></button></div>
+                <div><button title="G#" data-note="8" class="key black"></button></div>
+                <div><button title="A" data-note="9" class="key white"></button></div>
+                <div><button title="A#" data-note="10" class="key black"></button></div>
+                <div><button title="B" data-note="11" class="key white"></button></div>
+            </div>
         </div>
-      </div>
     </main>
 
     <script src="/static/grid.js"></script>
-  </body>
+</body>
+
 </html>
