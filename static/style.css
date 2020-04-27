@@ -33,12 +33,13 @@ button:focus {
   transform: scale(1.2);
 }
 
-#start,
 #intro {
+  width: 500px;
+  max-width: 100%;
+  margin: auto;
   display: none;
 }
 
-[data-holding] #start,
 [data-holding] #intro {
   display: block;
 }
@@ -140,6 +141,10 @@ button:focus {
 }
 
 #start {
-  width: 200px;
+  width: 100px;
+  height: 100px;
+  padding: 1em;
   margin: auto;
+  background; radial-gradient(center,#ff0000,#cf9bff,#ffff00,#65659a,#e4fbff,#ae1600,#00cdff,#ff6500,#ff00ff,#2fcd30,#8d8b8d,#0000fe);
+  color: white;
 }
