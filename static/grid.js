@@ -321,16 +321,24 @@ let setBeat = beatList => {
 let start = () => {
   // Hide holding screen
 
-  document.body.removeAttribute("data-holding");
+  document.body.removeAttribute("data-panel");
 
   if (started) {
     return false;
   }
+  
+  // Show footer
+  
+  document.querySelector("footer").style.display = "flex";
 
   // Make help button toggle intro again
 
   document.getElementById("help").onclick = function() {
-    document.body.setAttribute("data-holding", "true");
+    document.body.setAttribute("data-panel", "intro");
+  };
+  
+  document.getElementById("options").onclick = function() {
+    document.body.setAttribute("data-panel", "options");
   };
 
   // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc

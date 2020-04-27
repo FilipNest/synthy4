@@ -13,14 +13,6 @@ body {
   padding: 0px;
 }
 
-h1.title {
-  font-size: 3em;
-  color: white;
-  text-align: center;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
-    1px 1px 0 #000;
-}
-
 main {
   width: 240px;
   position: relative;
@@ -52,18 +44,29 @@ button:focus {
   display: none;
 }
 
-[data-holding] {
+h1.title {
+  font-size: 3em;
+  color: white;
+  text-align: center;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+[data-panel] {
   background-color: white !important;
   background-image: none !important;
 }
 
-[data-holding] #intro {
+[data-panel="intro"] #intro {
   display: block;
 }
 
-[data-holding] .controls,
-[data-holding] .wrapper,
-[data-holding] footer {
+[data-panel="options"] #options {
+  display:block;
+}
+
+[data-panel] .controls,
+[data-panel] .wrapper {
   visibility: hidden;
 }
 
@@ -76,6 +79,7 @@ footer {
   display: flex;
   padding: 0.5em;
   align-items: center;
+  display:none;
 }
 
 footer h1 {
@@ -91,15 +95,6 @@ footer button {
 footer nav {
   margin-left: auto;
 }
-
-/* @media screen and (max-width: 400px) {
-  footer {
-    flex-wrap: row-wrap;
-  }
-  footer nav {
-    width: 100%;
-  }
-} */
 
 .controls,
 .wrapper {
