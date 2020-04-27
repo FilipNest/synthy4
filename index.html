@@ -52,12 +52,13 @@
       <p>
         There's not that much here at the moment but making it a page in case more gets added.
       </p>
-      <form>
+      <form id="options-form">
         <label for="sharps_flats">Sharps or flats?</label>
         <select id="sharps_flats" name="sharps_flats">
-          <options value="sharps">Sharps</options>
-          <options value="flats">Flats</options>
+          <option value="sharps">Sharps</option>
+          <option value="flats">Flats</option>
         </select>
+        <input type="submit" value="Save"/>
       </form>
     
     </article>
@@ -106,13 +107,13 @@
     <footer>
       <h1>Synthy 4 by FilipNest</h1>
       <nav>
-        <button id="help">
+        <button id="help-toggle">
           Help
         </button>
-        <button id="options">
+        <button id="options-toggle">
           Options
         </button>
-        <button id="audio">
+        <button id="audio-toggle">
         </button>
       </nav>
     </footer>

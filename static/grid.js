@@ -111,9 +111,9 @@ let refresh = function() {
   // Check if the audiocontext has been suspended for some reason and change mute button
   
     if (window.audioCtx.state === "suspended") {
-      document.getElementById("audio").innerHTML = "Unmute";
+      document.getElementById("audio-toggle").innerHTML = "Unmute";
     } else {
-      document.getElementById("audio").innerHTML = "Mute";
+      document.getElementById("audio-toggle").innerHTML = "Mute";
     }
   
   // Store occupied locations so we can clear the rest
@@ -333,23 +333,23 @@ let start = () => {
 
   // Make help button toggle intro again
 
-  document.getElementById("help").onclick = function() {
+  document.getElementById("help-toggle").onclick = function() {
     document.body.setAttribute("data-panel", "intro");
   };
   
-  document.getElementById("options").onclick = function() {
+  document.getElementById("options-toggle").onclick = function() {
     document.body.setAttribute("data-panel", "options");
   };
 
   // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
 
-  document.getElementById("audio").onclick = function() {
+  document.getElementById("audio-toggle").onclick = function() {
     if (window.audioCtx.state === "suspended") {
       window.audioCtx.resume();
-      document.getElementById("audio").innerHTML = "Mute";
+      document.getElementById("audio-toggle").innerHTML = "Mute";
     } else {
       window.audioCtx.suspend();
-      document.getElementById("audio").innerHTML = "Unmute";
+      document.getElementById("audio-toggle").innerHTML = "Unmute";
     }
   };
 
@@ -458,3 +458,23 @@ let playNote = (note, beat, location, background) => {
 };
 
 document.getElementById("start").onclick = start;
+
+document.getElementById("options-form").addEventListener("submit", (e) => {
+  
+  e.preventDefault();
+  
+  document.body.removeAttribute("data-panel");
+  
+  let sharpsOrFlats = document.getElementById("sharps_flats").value;
+  
+  if(sharpsOrFlats === "sharps"){
+    
+    mapping = noteMappingSharps;
+    
+  } else if (sharpsOrFlats === "flats") {
+    
+    mapping = noteMappingFlats;
+    
+  }
+  
+});

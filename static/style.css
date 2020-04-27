@@ -41,7 +41,7 @@ button:focus {
   transform: scale(1.1);
 }
 
-#intro {
+article {
   width: 500px;
   max-width: 100%;
   margin: auto;
@@ -59,10 +59,6 @@ h1.title {
 [data-panel] {
   background-color: white !important;
   background-image: none !important;
-}
-
-article {
-  display: none;
 }
 
 [data-panel="intro"] #intro {
