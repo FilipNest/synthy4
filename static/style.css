@@ -24,6 +24,7 @@ body {
 }
 
 button {
+  cursor: pointer;
   border-style: none;
   min-width: 0;
   -webkit-appearance: none;
@@ -93,6 +94,7 @@ button:focus {
 .arrow,
 .key {
   flex-grow: 1;
+  cursor: pointer;
 }
 
 .beat {
