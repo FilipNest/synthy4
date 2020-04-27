@@ -69,6 +69,13 @@ h1.title {
   display: block;
 }
 
+[data-panel="options"] input,
+[data-panel="options"] button,
+[data-panel="options"] select {
+  margin: 1em auto;
+  display: block;
+}
+
 [data-panel="options"] input[type="submit"] {
   display: block;
   margin: 1em auto;

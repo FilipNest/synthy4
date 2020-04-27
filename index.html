@@ -45,7 +45,7 @@
     </article>
 
     <article id="options">
-      <h1>
+      <h1 class="title">
         Options
       </h1>
       <p>
@@ -72,7 +72,9 @@
         <div id="midi-or-not"></div>
 
         <div id="midi-options">
-          <button id="request-midi-access">Request MIDI Access</button>
+          
+          <button id="request-midi-access" type="button">Request MIDI Access</button>
+          <br />
 
           <label for="midi-device">MIDI Device</label>
           <select id="midi-device" name="midi-device">
@@ -123,8 +125,6 @@
       </div>
     </main>
 
-    <script src="/static/grid.js"></script>
-
     <footer>
       <h1>Synthy 4 by FilipNest</h1>
       <nav>
@@ -137,5 +137,7 @@
         <button id="audio-toggle"></button>
       </nav>
     </footer>
+
+    <script src="/static/grid.js"></script>
   </body>
 </html>

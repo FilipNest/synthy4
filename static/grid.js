@@ -450,4 +450,62 @@ document.getElementById("options-form").addEventListener("submit", e => {
   }
 });
 
+// Make help button toggle intro again
 
+document.getElementById("help-toggle").onclick = function() {
+  document.body.setAttribute("data-panel", "intro");
+};
+
+document.getElementById("options-toggle").onclick = function() {
+  document.body.setAttribute("data-panel", "options");
+
+  // Check if web midi is supported
+
+  if (navigator.requestMIDIAccess) {
+    document.getElementById("midi-or-not").innerHTML =
+      "Your browser supports WebMIDI";
+    document.getElementById("midi-options").style.display = "block";
+  } else {
+    document.getElementById("midi-or-not").innerHTML =
+      "Your browser does not support WebMIDI";
+    document.getElementById("midi-options").style.display = "none";
+  }
+};
+
+// Web MIDI integration
+
+document.getElementById("request-midi-access").addEventListener("click", () => {
+    
+  let midiAccessSuccess = (midi) => {
+    
+    let outputs = midi.outputs;
+    
+    for (let output in outputs){
+      
+      console.log(output);
+      
+    }
+    
+  }
+  
+  let midiAccessFail = () => {
+    
+    alert("MIDI access failed");
+    
+  }                              
+  
+  navigator.requestMIDIAccess().then(midiAccessSuccess, midiAccessFail);
+  
+})
+
+// AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
+
+document.getElementById("audio-toggle").onclick = function() {
+  if (window.audioCtx.state === "suspended") {
+    window.audioCtx.resume();
+    document.getElementById("audio-toggle").innerHTML = "Mute";
+  } else {
+    window.audioCtx.suspend();
+    document.getElementById("audio-toggle").innerHTML = "Unmute";
+  }
+};
