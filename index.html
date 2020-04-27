@@ -14,11 +14,10 @@
         A collaborative multiplayer grid synthesizer by by FilipNest
       </h2>
       <p>
-        Squares linked to other squares in a chain play together. Select which
+        Squares linked to others in a chain play together. Select which
         beats you want to play on, pick a note, then move around the grid to
-        join some others. Enjoy the colours. If it's lonely you can open
-        different browsers (recommended to mute all but one but the phasing is
-        quite fun if you don't). Click below to start!
+        join others. Enjoy the colours. If it's lonely you can open
+        different browsers (recommended to mute all but one but the phasing is fun if you don't). Click below to start!
       </p>
       <button id="start">♫</button>
       <p>
@@ -58,6 +57,16 @@
           <option value="sharps">Sharps</option>
           <option value="flats">Flats</option>
         </select>
+        
+        <div id="midioptions">
+          
+          <label for="midi-device">MIDI Device</label>
+          <select id="midi-device" name="midi-device">
+            <option>None</option>
+          </select>
+          
+        </div>
+        
         <input type="submit" value="Save"/>
       </form>
     
