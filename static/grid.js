@@ -263,9 +263,12 @@ let changeNote = noteNumber => {
 
 document.querySelectorAll("[data-note]").forEach(n => {
   let noteNumber = n.getAttribute("data-note");
-  
+
   n.addEventListener("click", () => {
-      note(noteNumber);
+    note(noteNumber);
+    if (window.audioCtx.state === "suspended") {
+      window.audioCtx.resume();
+    }
   });
 });
 
@@ -423,8 +426,8 @@ document.getElementById("start").onclick = start;
 
 // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
 
-     if(window.audioCtx.state === 'suspended') {
-      window.audioCtx.resume();
-     } else {
-       window.audioCtx.suspend();
-     }
+// if (window.audioCtx.state === "suspended") {
+//   window.audioCtx.resume();
+// } else {
+//   window.audioCtx.suspend();
+// }
