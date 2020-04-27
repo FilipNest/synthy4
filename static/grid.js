@@ -107,15 +107,14 @@ let playNotes = () => {
 };
 
 let refresh = function() {
-  
   // Check if the audiocontext has been suspended for some reason and change mute button
-  
-    if (window.audioCtx.state === "suspended") {
-      document.getElementById("audio-toggle").innerHTML = "Unmute";
-    } else {
-      document.getElementById("audio-toggle").innerHTML = "Mute";
-    }
-  
+
+  if (window.audioCtx.state === "suspended") {
+    document.getElementById("audio-toggle").innerHTML = "Unmute";
+  } else {
+    document.getElementById("audio-toggle").innerHTML = "Mute";
+  }
+
   // Store occupied locations so we can clear the rest
 
   let occupied = [];
@@ -326,32 +325,10 @@ let start = () => {
   if (started) {
     return false;
   }
-  
+
   // Show footer
-  
+
   document.querySelector("footer").style.display = "flex";
-
-  // Make help button toggle intro again
-
-  document.getElementById("help-toggle").onclick = function() {
-    document.body.setAttribute("data-panel", "intro");
-  };
-  
-  document.getElementById("options-toggle").onclick = function() {
-    document.body.setAttribute("data-panel", "options");
-  };
-
-  // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
-
-  document.getElementById("audio-toggle").onclick = function() {
-    if (window.audioCtx.state === "suspended") {
-      window.audioCtx.resume();
-      document.getElementById("audio-toggle").innerHTML = "Mute";
-    } else {
-      window.audioCtx.suspend();
-      document.getElementById("audio-toggle").innerHTML = "Unmute";
-    }
-  };
 
   // Generate grid and lookup matrix
 
@@ -459,22 +436,18 @@ let playNote = (note, beat, location, background) => {
 
 document.getElementById("start").onclick = start;
 
-document.getElementById("options-form").addEventListener("submit", (e) => {
-  
+document.getElementById("options-form").addEventListener("submit", e => {
   e.preventDefault();
-  
+
   document.body.removeAttribute("data-panel");
-  
+
   let sharpsOrFlats = document.getElementById("sharps_flats").value;
-  
-  if(sharpsOrFlats === "sharps"){
-    
+
+  if (sharpsOrFlats === "sharps") {
     mapping = noteMappingSharps;
-    
   } else if (sharpsOrFlats === "flats") {
-    
     mapping = noteMappingFlats;
-    
   }
-  
 });
+
+

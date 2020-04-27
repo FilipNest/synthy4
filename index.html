@@ -14,10 +14,11 @@
         A collaborative multiplayer grid synthesizer by by FilipNest
       </h2>
       <p>
-        Squares linked to others in a chain play together. Select which
-        beats you want to play on, pick a note, then move around the grid to
-        join others. Enjoy the colours. If it's lonely you can open
-        different browsers (recommended to mute all but one but the phasing is fun if you don't). Click below to start!
+        Squares linked to others in a chain play together. Select which beats
+        you want to play on, pick a note, then move around the grid to join
+        others. Enjoy the colours. If it's lonely you can open different
+        browsers (recommended to mute all but one but the phasing is fun if you
+        don't). Click below to start!
       </p>
       <button id="start">♫</button>
       <p>
@@ -42,14 +43,14 @@
         </small>
       </p>
     </article>
-    
+
     <article id="options">
-   
       <h1>
         Options
       </h1>
       <p>
-        There's not that much here at the moment but making it a page in case more gets added.
+        There's not that much here at the moment but making it a page in case
+        more gets added.
       </p>
       <form id="options-form">
         <label for="sharps_flats">Sharps or flats?</label>
@@ -57,19 +58,30 @@
           <option value="sharps">Sharps</option>
           <option value="flats">Flats</option>
         </select>
-        
-        <div id="midioptions">
-          
+        <br />
+
+        <h2>
+          MIDI Options
+        </h2>
+
+        <p>
+          Connect a midi device (via a supported browser) and the note output
+          will go through it.
+        </p>
+
+        <div id="midi-or-not"></div>
+
+        <div id="midi-options">
+          <button id="request-midi-access">Request MIDI Access</button>
+
           <label for="midi-device">MIDI Device</label>
           <select id="midi-device" name="midi-device">
             <option>None</option>
           </select>
-          
         </div>
-        
-        <input type="submit" value="Save"/>
+
+        <input type="submit" value="Save" />
       </form>
-    
     </article>
 
     <main>
@@ -122,8 +134,7 @@
         <button id="options-toggle">
           Options
         </button>
-        <button id="audio-toggle">
-        </button>
+        <button id="audio-toggle"></button>
       </nav>
     </footer>
   </body>
