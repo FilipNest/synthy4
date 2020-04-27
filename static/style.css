@@ -15,8 +15,8 @@ body {
 
 a:link,
 a:visited {
-  color: inherit;
-  
+  color: #ff0000;
+  text-decoration: none;
 }
 
 article {
