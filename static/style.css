@@ -145,6 +145,6 @@ button:focus {
   height: 100px;
   padding: 1em;
   margin: auto;
-  background; radial-gradient(center,#ff0000,#cf9bff,#ffff00,#65659a,#e4fbff,#ae1600,#00cdff,#ff6500,#ff00ff,#2fcd30,#8d8b8d,#0000fe);
+  background: radial-gradient(#ff0000,#cf9bff,#ffff00,#65659a,#e4fbff,#ae1600,#00cdff,#ff6500,#ff00ff,#2fcd30,#8d8b8d,#0000fe);
   color: white;
 }
