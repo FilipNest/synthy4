@@ -263,8 +263,13 @@ let changeNote = noteNumber => {
 
 document.querySelectorAll("[data-note]").forEach(n => {
   let noteNumber = n.getAttribute("data-note");
-
+  
   n.addEventListener("click", () => {
+    
+     if(window.audioCtx.state === 'suspended') {
+      window.audioCtx.resume();
+     }
+    
     note(noteNumber);
   });
 });
