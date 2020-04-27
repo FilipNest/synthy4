@@ -250,12 +250,6 @@ let note = noteNumber => {
 let changeNote = noteNumber => {
   document.querySelectorAll("[data-note]").forEach(k => {
     let keyNote = k.getAttribute("data-note");
-
-    if (keyNote === noteNumber) {
-      k.setAttribute("data-selected", "true");
-    } else {
-      k.setAttribute("data-selected", "false");
-    }
   });
 };
 
@@ -266,9 +260,6 @@ document.querySelectorAll("[data-note]").forEach(n => {
 
   n.addEventListener("click", () => {
     note(noteNumber);
-    if (window.audioCtx.state === "suspended") {
-      window.audioCtx.resume();
-    }
   });
 });
 
