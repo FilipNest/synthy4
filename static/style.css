@@ -13,6 +13,12 @@ body {
   padding: 0px;
 }
 
+a:link,
+a:visited {
+  color: inherit;
+  
+}
+
 article {
   padding: 1em;
 }

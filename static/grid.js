@@ -425,12 +425,23 @@ let playNote = (note, beat, location, background) => {
     box.style.backgroundColor = noteColours[note];
     document.body.style.backgroundImage = background;
 
+    if (window.midiOut) {
+      // Play midi note if set
+      window.midiOut.send([0x90, 60 + parseInt(note), 100]);
+    }
+
     window.setTimeout(() => {
       box.style.backgroundColor = "";
       document
         .querySelector(`[data-beat="${currentBeat}"]`)
         .removeAttribute("data-current");
     }, 100);
+
+    // Turn off midi note if set
+
+    if (window.midiOut) {
+      window.midiOut.send([0x80, 60, 100]);
+    }
   }, noteStart * 1000);
 };
 
@@ -453,21 +464,6 @@ document.getElementById("options-form").addEventListener("submit", e => {
 
   if (midiDevice) {
     window.midiOut = window.midioutputs[midiDevice];
-
-    setInterval(function() {
-      const NOTE_ON = 0x90;
-      const NOTE_OFF = 0x80;
-
-      const msgOn = [NOTE_ON, 60, 100];
-      const msgOff = [NOTE_ON, 60, 100];
-
-      // First send the note on;
-      window.midiOut.send(msgOn);
-
-      // Then send the note off. You can send this separately if you want
-      // (i.e. when the button is released)
-      window.midiOut.send(msgOff, Date.now() + 100);
-    }, 500);
   }
 });
 
