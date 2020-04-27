@@ -13,6 +13,10 @@ body {
   padding: 0px;
 }
 
+article {
+  padding: 1em;
+}
+
 main {
   width: 240px;
   position: relative;
@@ -57,12 +61,16 @@ h1.title {
   background-image: none !important;
 }
 
+article {
+  display: none;
+}
+
 [data-panel="intro"] #intro {
   display: block;
 }
 
 [data-panel="options"] #options {
-  display:block;
+  display: block;
 }
 
 [data-panel] .controls,
@@ -79,7 +87,7 @@ footer {
   display: flex;
   padding: 0.5em;
   align-items: center;
-  display:none;
+  display: none;
 }
 
 footer h1 {
@@ -93,6 +101,7 @@ footer button {
 }
 
 footer nav {
+  display: flex;
   margin-left: auto;
 }
 
