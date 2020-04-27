@@ -250,6 +250,15 @@ let note = noteNumber => {
 let changeNote = noteNumber => {
   document.querySelectorAll("[data-note]").forEach(k => {
     let keyNote = k.getAttribute("data-note");
+    if(keyNote === noteNumber){
+      
+        k.setAttribute("data-selected", "true");
+      
+    } else {
+      
+      k.removeAttribute("data-selected");
+      
+    }
   });
 };
 
