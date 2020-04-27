@@ -448,17 +448,27 @@ document.getElementById("options-form").addEventListener("submit", e => {
   } else if (sharpsOrFlats === "flats") {
     mapping = noteMappingFlats;
   }
-  
+
   let midiDevice = document.getElementById("midi-device").value;
-  
-  if(midiDevice){
-    
+
+  if (midiDevice) {
     window.midiOut = window.midioutputs[midiDevice];
-    
-    console.log(window.midiOut);
-    
+
+    setInterval(function() {
+      const NOTE_ON = 0x90;
+      const NOTE_OFF = 0x80;
+
+      const msgOn = [NOTE_ON, 60, 100];
+      const msgOff = [NOTE_ON, 60, 100];
+
+      // First send the note on;
+      window.midiOut.send(msgOn);
+
+      // Then send the note off. You can send this separately if you want
+      // (i.e. when the button is released)
+      window.midiOut.send(msgOff, Date.now() + 100);
+    }, 500);
   }
-  
 });
 
 // Make help button toggle intro again
@@ -486,7 +496,7 @@ document.getElementById("options-toggle").onclick = function() {
 // Web MIDI integration
 
 window.midiOut = null;
-window.midioutputs = []; 
+window.midioutputs = [];
 
 document.getElementById("request-midi-access").addEventListener("click", () => {
   let midiAccessSuccess = midi => {
@@ -496,7 +506,10 @@ document.getElementById("request-midi-access").addEventListener("click", () => {
       window.midioutputs[output.name] = output;
       document
         .getElementById("midi-device")
-        .insertAdjacentHTML("afterBegin", `<option value="${output.name}">${output.name}</option>`);
+        .insertAdjacentHTML(
+          "afterBegin",
+          `<option value="${output.name}">${output.name}</option>`
+        );
     });
   };
 
