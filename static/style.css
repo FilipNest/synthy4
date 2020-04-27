@@ -52,6 +52,11 @@ button:focus {
   display: none;
 }
 
+[data-holding] {
+  background-color: white !important;
+  background-image: none !important;
+}
+
 [data-holding] #intro {
   display: block;
 }
@@ -59,7 +64,7 @@ button:focus {
 [data-holding] .controls,
 [data-holding] .wrapper,
 [data-holding] footer {
-  display: none;
+  visibility: hidden;
 }
 
 footer {
@@ -79,6 +84,8 @@ footer h1 {
 
 footer button {
   justify-self: flex-end;
+  background-color: transparent;
+  color: white;
 }
 
 footer nav {

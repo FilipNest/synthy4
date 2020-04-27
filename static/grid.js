@@ -250,14 +250,10 @@ let note = noteNumber => {
 let changeNote = noteNumber => {
   document.querySelectorAll("[data-note]").forEach(k => {
     let keyNote = k.getAttribute("data-note");
-    if(keyNote === noteNumber){
-      
-        k.setAttribute("data-selected", "true");
-      
+    if (keyNote === noteNumber) {
+      k.setAttribute("data-selected", "true");
     } else {
-      
       k.removeAttribute("data-selected");
-      
     }
   });
 };
@@ -317,6 +313,28 @@ let start = () => {
   // Hide holding screen
 
   document.body.removeAttribute("data-holding");
+
+  if (started) {
+    return false;
+  }
+
+  // Make help button toggle intro again
+
+  document.getElementById("help").onclick = function() {
+    document.body.setAttribute("data-holding", "true");
+  };
+
+  // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
+
+  document.getElementById("audio").onclick = function() {
+    if (window.audioCtx.state === "suspended") {
+      window.audioCtx.resume();
+      document.getElementById("audio").innerHTML = "mute";
+    } else {
+      window.audioCtx.suspend();
+      document.getElementById("audio").innerHTML = "unmute";
+    }
+  };
 
   // Generate grid and lookup matrix
 
@@ -423,11 +441,3 @@ let playNote = (note, beat, location, background) => {
 };
 
 document.getElementById("start").onclick = start;
-
-// AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
-
-// if (window.audioCtx.state === "suspended") {
-//   window.audioCtx.resume();
-// } else {
-//   window.audioCtx.suspend();
-// }
