@@ -448,6 +448,17 @@ document.getElementById("options-form").addEventListener("submit", e => {
   } else if (sharpsOrFlats === "flats") {
     mapping = noteMappingFlats;
   }
+  
+  let midiDevice = document.getElementById("midi-device").value;
+  
+  if(midiDevice){
+    
+    window.midiOut = window.midioutputs[midiDevice];
+    
+    console.log(window.midiOut);
+    
+  }
+  
 });
 
 // Make help button toggle intro again
@@ -474,29 +485,27 @@ document.getElementById("options-toggle").onclick = function() {
 
 // Web MIDI integration
 
+window.midiOut = null;
+window.midioutputs = []; 
+
 document.getElementById("request-midi-access").addEventListener("click", () => {
-    
-  let midiAccessSuccess = (midi) => {
-    
+  let midiAccessSuccess = midi => {
     let outputs = midi.outputs;
-    
-    for (let output in outputs){
-      
-      console.log(output);
-      
-    }
-    
-  }
-  
+
+    outputs.forEach(function(output) {
+      window.midioutputs[output.name] = output;
+      document
+        .getElementById("midi-device")
+        .insertAdjacentHTML("afterBegin", `<option value="${output.name}">${output.name}</option>`);
+    });
+  };
+
   let midiAccessFail = () => {
-    
     alert("MIDI access failed");
-    
-  }                              
-  
+  };
+
   navigator.requestMIDIAccess().then(midiAccessSuccess, midiAccessFail);
-  
-})
+});
 
 // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
 
