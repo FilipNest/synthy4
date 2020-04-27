@@ -101,11 +101,8 @@ let makeRequest = url => {
 let linkedBeatNotes = [];
 
 let playNotes = () => {
-  
-  linkedBeatNotes.forEach((notes, beat)  => {
-  
+  linkedBeatNotes.forEach((notes, beat) => {
     playBeat(beat, notes);
-  
   });
 };
 
@@ -115,9 +112,8 @@ let refresh = function() {
   let occupied = [];
 
   makeRequest("/status").then(data => {
-    
     linkedBeatNotes = data.beatNotes;
-    
+
     let users = data.users;
 
     you = users[data.you];
@@ -205,14 +201,10 @@ let moveDirection = direction => {
 
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-if(iOS){
-  
-  document.querySelectorAll(".controls button").forEach((b) => {
-    
+if (iOS) {
+  document.querySelectorAll(".controls button").forEach(b => {
     b.outerHTML = b.outerHTML.split("button").join("div");
-    
-  })
-  
+  });
 }
 
 // Map arrow buttons to move directions
@@ -305,7 +297,6 @@ let beat = function(beatNumber, on) {
 };
 
 let setBeat = beatList => {
-  
   // Highlight the user's selected beats
 
   document.querySelectorAll("[data-beat]").forEach(b => {
@@ -320,9 +311,8 @@ let setBeat = beatList => {
 };
 
 let start = () => {
-  
   // Hide holding screen
-  
+
   document.body.removeAttribute("data-holding");
 
   // Generate grid and lookup matrix
@@ -331,43 +321,33 @@ let start = () => {
 
   // Tempo
   window.setInterval(refresh, tempo);
-  
+
   // Delay playback loop so that new beats can catch up
   window.setTimeout(() => {
-  
     window.setInterval(playNotes, tempo);
-    
   }, tempo / 2);
-  
+
   // create web audio api context
   window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 };
 
 let playBeat = (beat, beatNotes) => {
-  
-//  Get all notes in beat for background colours
-  
-    let notes = beatNotes.map(u => {
-      
-      return noteColours[u.note];
-      
-    })
-    
-    let background = "";
-    
-    if(notes.length){
-              
-      background = "radial-gradient(circle, " + notes.join(", ") + ", black)";
-      
-    }
-    
-    beatNotes.forEach((b, i)=>{
-      
-        playNote(b.note, beat, b.location, background);
-      
-    })
-  
-}
+  //  Get all notes in beat for background colours
+
+  let notes = beatNotes.map(u => {
+    return noteColours[u.note];
+  });
+
+  let background = "";
+
+  if (notes.length) {
+    background = "radial-gradient(circle, " + notes.join(", ") + ", black)";
+  }
+
+  beatNotes.forEach((b, i) => {
+    playNote(b.note, beat, b.location, background);
+  });
+};
 
 let playNote = (note, beat, location, background) => {
   // Calculate the time for one sequence of all beats
@@ -416,31 +396,27 @@ let playNote = (note, beat, location, background) => {
   let column = location[1];
 
   window.setTimeout(() => {
-    
     // Increment current beat for highlighting
-    if(currentBeat !== beat){
-      
+    if (currentBeat !== beat) {
       currentBeat = beat;
-             
     }
-    
-    document.querySelector(`[data-beat="${currentBeat}"]`).setAttribute("data-current", "true");
 
-    
+    document
+      .querySelector(`[data-beat="${currentBeat}"]`)
+      .setAttribute("data-current", "true");
+
     let box = grid[row][column];
 
     box.style.backgroundColor = noteColours[note];
     document.body.style.backgroundImage = background;
-      
-    window.setTimeout(() => {
-      
-      box.style.backgroundColor = "";
-      document.querySelector(`[data-beat="${currentBeat}"]`).removeAttribute("data-current");
 
+    window.setTimeout(() => {
+      box.style.backgroundColor = "";
+      document
+        .querySelector(`[data-beat="${currentBeat}"]`)
+        .removeAttribute("data-current");
     }, 100);
-    
   }, noteStart * 1000);
-  
 };
 
 document.getElementById("start").onclick = start;
