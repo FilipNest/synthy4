@@ -107,6 +107,15 @@ let playNotes = () => {
 };
 
 let refresh = function() {
+  
+  // Check if the audiocontext has been suspended for some reason and change mute button
+  
+    if (window.audioCtx.state === "suspended") {
+      document.getElementById("audio").innerHTML = "Unmute";
+    } else {
+      document.getElementById("audio").innerHTML = "Mute";
+    }
+  
   // Store occupied locations so we can clear the rest
 
   let occupied = [];
@@ -329,10 +338,10 @@ let start = () => {
   document.getElementById("audio").onclick = function() {
     if (window.audioCtx.state === "suspended") {
       window.audioCtx.resume();
-      document.getElementById("audio").innerHTML = "mute";
+      document.getElementById("audio").innerHTML = "Mute";
     } else {
       window.audioCtx.suspend();
-      document.getElementById("audio").innerHTML = "unmute";
+      document.getElementById("audio").innerHTML = "Unmute";
     }
   };
 
