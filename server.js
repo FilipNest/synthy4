@@ -282,21 +282,25 @@ const server = http.createServer((req, res) => {
     if (query.note >= 0 && query.note <= 12) {
       users[user].note = query.note;
     }
-  } else if (query.beatIn !== -1) {
+  } else if (query.beatIn) {
 
     // Check if beat in range
 
-    if (query.beatIn >= 0 && query.beatIn <= 7) {
-      users[user].beat.add(query.beatIn);
+    let beat = parseInt(query.beatIn);
+
+    if (beat >= 0 && beat <= 7) {
+      users[user].beat.add(beat);
     }
 
     res.end(JSON.stringify(Array.from(users[user].beat)));
   } else if (query.beatOut) {
 
+    let beat = parseInt(query.beatOut);
+
     // Check if beat in range
 
-    if (query.beatOut >= 0 && query.beatOut <= 7) {
-      users[user].beat.delete(query.beatOut);
+    if (beat >= 0 && beat <= 7) {
+      users[user].beat.delete(beat);
     }
 
     res.end(JSON.stringify(Array.from(users[user].beat)));
