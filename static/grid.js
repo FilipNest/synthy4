@@ -74,7 +74,7 @@ let frequencyMapping = {
 // Default to sharps. TODO: Switch
 let mapping = noteMappingSharps;
 
-let generateGrid = function() {
+let generateGrid = function () {
   let size = 12;
 
   for (let row = 0; row < size; row += 1) {
@@ -92,8 +92,12 @@ let generateGrid = function() {
   }
 };
 
-let makeRequest = url => {
+let apiRequest = params => {
+
+  url = "/api?params=" + encodeURIComponent(JSON.stringify(params));
+
   return fetch(new Request(url)).then(response => response.json());
+
 };
 
 // Store of linked users' notes per beat
@@ -107,7 +111,7 @@ let playNotes = () => {
 };
 
 let refreshPositions = users => {
-  
+
   // Store occupied positions so we can clear the rest
   let occupied = [];
 
@@ -144,9 +148,9 @@ let refreshPositions = users => {
   });
 };
 
-let refresh = function() {
+let refresh = function () {
 
-  makeRequest("/status").then(data => {
+  apiRequest({}).then(data => {
     // Check if the audiocontext has been suspended for some reason and change mute button
 
     if (window.audioCtx.state === "suspended") {
@@ -155,12 +159,14 @@ let refresh = function() {
       document.getElementById("audio-toggle").innerHTML = "Mute";
     }
 
-    linkedBeatNotes = data.beatNotes;
+    let status = data.gridStatus;
 
-    let users = data.users;
+    linkedBeatNotes = status.beatNotes;
 
-    you = users[data.you];
-    
+    let users = status.users;
+
+    you = users[status.you];
+
     refreshPositions(users);
 
     // Add starting note and beat if not set already
@@ -177,8 +183,8 @@ let refresh = function() {
 
 // Move current user to a square
 
-let move = function(row, column) {
-  makeRequest("?move=" + row + "-" + column);
+let move = function (row, column) {
+  apiRequest({ move: { row: row, column: column } });
 };
 
 let moveDirection = direction => {
@@ -232,7 +238,7 @@ document.querySelectorAll(".arrow").forEach(a => {
 
 // Arrow shortcuts
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", function (event) {
   switch (event.which) {
     case 37:
       moveDirection("left");
@@ -252,7 +258,7 @@ document.addEventListener("keydown", function(event) {
 // Make note change request
 
 let note = noteNumber => {
-  makeRequest("?note=" + noteNumber);
+  apiRequest({ note: noteNumber });
 
   // Highlight the user's selected note.
   // Can change to this straight away as nothing blocks it
@@ -294,16 +300,16 @@ document.querySelectorAll("[data-beat]").forEach(b => {
 
 // Make beat change request
 
-let beat = function(beatNumber, on) {
+let beat = function (beatNumber, on) {
   let request;
 
   if (on) {
-    request = "?beatIn=";
+    request = {beatIn: beatNumber}
   } else {
-    request = "?beatOut=";
+    request = {beatOut: beatNumber}
   }
 
-  makeRequest(request + beatNumber).then(result => {
+  apiRequest(request).then(result => {
     setBeat(result);
   });
 };
@@ -474,11 +480,11 @@ document.getElementById("options-form").addEventListener("submit", e => {
 
 // Make help button toggle intro again
 
-document.getElementById("help-toggle").onclick = function() {
+document.getElementById("help-toggle").onclick = function () {
   document.body.setAttribute("data-panel", "intro");
 };
 
-document.getElementById("options-toggle").onclick = function() {
+document.getElementById("options-toggle").onclick = function () {
   document.body.setAttribute("data-panel", "options");
 
   // Check if web midi is supported
@@ -503,7 +509,7 @@ document.getElementById("request-midi-access").addEventListener("click", () => {
   let midiAccessSuccess = midi => {
     let outputs = midi.outputs;
 
-    outputs.forEach(function(output) {
+    outputs.forEach(function (output) {
       window.midioutputs[output.name] = output;
       document
         .getElementById("midi-device")
@@ -523,7 +529,7 @@ document.getElementById("request-midi-access").addEventListener("click", () => {
 
 // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
 
-document.getElementById("audio-toggle").onclick = function() {
+document.getElementById("audio-toggle").onclick = function () {
   if (window.audioCtx.state === "suspended") {
     window.audioCtx.resume();
     document.getElementById("audio-toggle").innerHTML = "Mute";

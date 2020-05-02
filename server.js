@@ -165,18 +165,8 @@ let getGridStatus = function(user) {
     }
   });
 
-  let output = JSON.stringify(
-    { users: users, you: user, linked: linked, beatNotes: beatNotes },
-    (key, value) => {
-      if (value instanceof Set) {
-        return Array.from(value);
-      }
+  return { users: users, you: user, linked: linked, beatNotes: beatNotes };
 
-      return value;
-    }
-  );
-
-  return output;
 };
 
 let userFromRequest = (request, response) => {
@@ -227,6 +217,7 @@ let userFromRequest = (request, response) => {
 };
 
 const server = http.createServer((req, res) => {
+
   // Handle static content
   if (req.url === "/") {
     let index = fs.readFileSync("index.html", "utf8");
@@ -237,52 +228,71 @@ const server = http.createServer((req, res) => {
     return res.end(file);
   }
 
+  if(req.url.indexOf("api") !== -1){
+
+  // Start of dynamic content (API)
+  // Moved this into a one call with different query params
+  // Cutting down number of requests
+
+  // Parse the url for query string params we can do something with
+
+  let query = JSON.parse(url.parse(req.url, true).query.params);
+
   let user = userFromRequest(req, res);
 
   // Pop inactivity back to 0
 
   users[user].inactive = 0;
-
-  // Parse the url for query string params we can do something with
-
-  let query = url.parse(req.url, true).query;
     
-  // route for getting grid status
+  res.setHeader("Content-Type", "application/json");
 
-  if (req.url === "/status") {
-    res.setHeader("Content-Type", "application/json");
+  // Check if user is requesting movement change
 
-    res.end(getGridStatus(user));
-  } else if (query.move) {
-    
+  let apiResponse = {
+    gridStatus: {},
+    errors: []
+  }
+
+  if(query.move){
+
     let previousRow = users[user].location[0];
     let previousColumn = users[user].location[1];
 
-    let coords = query.move.split("-");
-
-    let row = parseInt(coords[0]);
-    let column = parseInt(coords[1]);
+    let row = query.move.row;
+    let column = query.move.column;
 
     if (placeUser(users[user], row, column)) {
+
       // Clear previous location
 
       grid[previousRow][previousColumn] = null;
-
-      res.end(JSON.stringify(true));
+    
     } else {
+
       // Position not available
 
-      res.statusCode = 400;
-      res.end(JSON.stringify(false));
+      apiResponse.errors.push("Position not available");
+      
     }
-  } else if (query.note) {
 
-    // Check if note in range
+  }
+
+  if (query.note) {
+
+    // Check if note in range and set
 
     if (query.note >= 0 && query.note <= 12) {
       users[user].note = query.note;
     }
-  } else if (query.beatIn) {
+
+  }
+
+  if(query.beatIn){
+
+
+  }
+
+  if(query.beatIn){
 
     // Check if beat in range
 
@@ -292,8 +302,9 @@ const server = http.createServer((req, res) => {
       users[user].beat.add(beat);
     }
 
-    res.end(JSON.stringify(Array.from(users[user].beat)));
-  } else if (query.beatOut) {
+  }
+
+  if (query.beatOut) {
 
     let beat = parseInt(query.beatOut);
 
@@ -302,12 +313,33 @@ const server = http.createServer((req, res) => {
     if (beat >= 0 && beat <= 7) {
       users[user].beat.delete(beat);
     }
-
-    res.end(JSON.stringify(Array.from(users[user].beat)));
-  } else {
-    res.statusCode = 404;
-    res.end("404");
+    
   }
+
+  apiResponse.gridStatus = getGridStatus(user);
+
+  // JSON stringify including Sets to Arrays
+  
+  let output = JSON.stringify(
+    apiResponse,
+    (key, value) => {
+      if (value instanceof Set) {
+        return Array.from(value);
+      }
+
+      return value;
+    }
+  );
+  
+  res.end(output);
+
+  } else {
+
+    res.statusCode = 404;
+    res.end("Not a valid page");
+
+  }
+ 
 });
 
 // Periodically check for inactivity to remove users
