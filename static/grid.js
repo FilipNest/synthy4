@@ -56,6 +56,18 @@ let noteColours = {
   11: "#0000fe"
 };
 
+// Add note colours to keys
+
+document.querySelectorAll("[data-note]").forEach((key, index) => {
+
+  let colourMarker = document.createElement("span");
+  colourMarker.setAttribute("class", "colourmarker");
+  colourMarker.style.backgroundColor = noteColours[index];
+
+  key.insertAdjacentElement("beforeend", colourMarker);
+
+})
+
 let frequencyMapping = {
   0: 261.63,
   1: 277.18,
