@@ -3,7 +3,7 @@ const fs = require("fs");
 const crypto = require("crypto");
 const url = require("url");
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const users = {};
 
@@ -234,6 +234,8 @@ const server = http.createServer((req, res) => {
   // Moved this into a one call with different query params
   // Cutting down number of requests
 
+  res.setHeader("Content-Type", "application/json");
+  
   // Parse the url for query string params we can do something with
 
   let query = JSON.parse(url.parse(req.url, true).query.params);
@@ -244,8 +246,6 @@ const server = http.createServer((req, res) => {
 
   users[user].inactive = 0;
     
-  res.setHeader("Content-Type", "application/json");
-
   // Check if user is requesting movement change
 
   let apiResponse = {
@@ -284,11 +284,6 @@ const server = http.createServer((req, res) => {
     if (query.note >= 0 && query.note <= 12) {
       users[user].note = query.note;
     }
-
-  }
-
-  if(query.beatIn){
-
 
   }
 
