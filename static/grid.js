@@ -165,7 +165,7 @@ let refresh = function () {
 
     let users = status.users;
 
-    you = users[status.you];
+    you = status.you;
 
     refreshPositions(users);
 
@@ -310,11 +310,12 @@ let beat = function (beatNumber, on) {
   }
 
   apiRequest(request).then(result => {
-    setBeat(result);
+    setBeat(result.gridStatus.you.beat);
   });
 };
 
 let setBeat = beatList => {
+  
   // Highlight the user's selected beats
 
   document.querySelectorAll("[data-beat]").forEach(b => {

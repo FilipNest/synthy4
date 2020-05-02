@@ -165,7 +165,7 @@ let getGridStatus = function(user) {
     }
   });
 
-  return { users: users, you: user, linked: linked, beatNotes: beatNotes };
+  return { users: users, you: users[user], linked: linked, beatNotes: beatNotes };
 
 };
 
