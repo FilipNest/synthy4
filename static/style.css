@@ -24,7 +24,7 @@ article {
 }
 
 main {
-  width: 240px;
+  width: 290px;
   position: relative;
   top: 50%;
   transform: translateY(-50%);
@@ -121,14 +121,14 @@ footer nav {
 
 .controls,
 .wrapper {
-  width: 240px;
+  width: 290px;
   margin: auto;
 }
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(12, 20px);
-  grid-template-rows: repeat(12, 20px);
+  grid-template-columns: repeat(12, 24.2px);
+  grid-template-rows: repeat(12, 24.2px);
   grid-auto-flow: row;
 }
 
@@ -153,10 +153,8 @@ footer nav {
 .keyboard,
 .arrows {
   position: relative;
-  width: 240px;
+  width: 290px;
   display: flex;
-  flex-basis: 100%;
-  align-items: flex-end;
 }
 
 .beat,
@@ -164,6 +162,11 @@ footer nav {
 .key {
   flex-grow: 1;
   cursor: pointer;
+}
+
+.beatstrip {
+  min-width: auto; 
+  max-width: auto;
 }
 
 .beat {
@@ -192,11 +195,11 @@ footer nav {
 
 .key.white {
   background-color: rgba(255,255,255,0.3);
-  height: 80px;
+  height: 90px;
 }
 
 .key.black {
-  height: 80px;
+  height: 90px;
   background-color: rgba(0,0,0,0.3);
 }
 

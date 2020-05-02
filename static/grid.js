@@ -392,7 +392,7 @@ let playNote = (note, beat, location, background) => {
   // Calculate the time for one sequence of all beats
   let sequenceTimeSeconds = tempo / 1000;
 
-  let oneBeat = sequenceTimeSeconds / 8;
+  let oneBeat = sequenceTimeSeconds / 16;
 
   let oscillator = window.audioCtx.createOscillator();
   oscillator.type = "sawtooth";
@@ -409,15 +409,10 @@ let playNote = (note, beat, location, background) => {
 
   let noteStart = oneBeat * beat;
 
-  let noteEnd = oneBeat * (beat + 1);
-
-  // Use percentages for envelope
-
   let attack = oneBeat / 3;
   let release = oneBeat / 4;
 
   let beatStart = window.audioCtx.currentTime + noteStart;
-  let beatEnd = window.audioCtx.currentTime + noteEnd;
 
   oscillator.start(beatStart);
 

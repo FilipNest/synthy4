@@ -154,7 +154,7 @@ let getGridStatus = function(user) {
   let beatNotes = [];
 
   linked.forEach(u => {
-    for (let b = 0; b < 8; b += 1) {
+    for (let b = 0; b < 16; b += 1) {
       if (!beatNotes[b]) {
         beatNotes[b] = [];
       }
@@ -293,7 +293,7 @@ const server = http.createServer((req, res) => {
 
     let beat = parseInt(query.beatIn);
 
-    if (beat >= 0 && beat <= 7) {
+    if (beat >= 0 && beat <= 15) {
       users[user].beat.add(beat);
     }
 
@@ -305,7 +305,7 @@ const server = http.createServer((req, res) => {
 
     // Check if beat in range
 
-    if (beat >= 0 && beat <= 7) {
+    if (beat >= 0 && beat <= 15) {
       users[user].beat.delete(beat);
     }
     
