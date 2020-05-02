@@ -1,6 +1,7 @@
 const http = require("http");
 const fs = require("fs");
 const crypto = require("crypto");
+const url = require("url");
 
 const port = 3000;
 
@@ -141,15 +142,52 @@ let parseCookies = request => {
   return list;
 };
 
-const server = http.createServer((req, res) => {
+// Function for sending back the current state of the grid (users etc) relative to a user
+let getGridStatus = function(user) {
+  let linked = getAllConnected(
+    users[user].location[0],
+    users[user].location[1]
+  );
+
+  // Split linked into beats so we can get each beat's colours
+
+  let beatNotes = [];
+
+  linked.forEach(u => {
+    for (let b = 0; b < 8; b += 1) {
+      if (!beatNotes[b]) {
+        beatNotes[b] = [];
+      }
+
+      if (u.beat.has(b)) {
+        beatNotes[b].push(u);
+      }
+    }
+  });
+
+  let output = JSON.stringify(
+    { users: users, you: user, linked: linked, beatNotes: beatNotes },
+    (key, value) => {
+      if (value instanceof Set) {
+        return Array.from(value);
+      }
+
+      return value;
+    }
+  );
+
+  return output;
+};
+
+let userFromRequest = (request, response) => {
   // Get cookies to determine if session
 
-  let user = parseCookies(req)["grid-user"];
+  let user = parseCookies(request)["grid-user"];
 
   if (!user) {
     const id = crypto.randomBytes(16).toString("hex");
 
-    res.setHeader("Set-Cookie", "grid-user=" + id);
+    response.setHeader("Set-Cookie", "grid-user=" + id);
 
     user = id;
   }
@@ -160,8 +198,8 @@ const server = http.createServer((req, res) => {
     // Check if the maximum number of users has been reached
 
     if (Object.keys(users).length >= maxGrid) {
-      res.statusCode = 529;
-      res.end("Grid is full, try again later");
+      response.statusCode = 529;
+      response.end("Grid is full, try again later");
       return false;
     }
 
@@ -185,71 +223,42 @@ const server = http.createServer((req, res) => {
     }
   }
 
+  return user;
+};
+
+const server = http.createServer((req, res) => {
+  // Handle static content
+  if (req.url === "/") {
+    let index = fs.readFileSync("index.html", "utf8");
+    res.setHeader("Content-Type", "text/html");
+    return res.end(index);
+  } else if (req.url.indexOf("/static") !== -1) {
+    let file = fs.readFileSync(__dirname + req.url, "utf8");
+    return res.end(file);
+  }
+
+  let user = userFromRequest(req, res);
+
   // Pop inactivity back to 0
 
   users[user].inactive = 0;
 
+  // Parse the url for query string params we can do something with
+
+  let query = url.parse(req.url, true).query;
+    
   // route for getting grid status
 
   if (req.url === "/status") {
     res.setHeader("Content-Type", "application/json");
 
-    // Get linked occupied places
-
-    let linked = getAllConnected(
-      users[user].location[0],
-      users[user].location[1]
-    );
-
-    // Split linked into beats so we can get each beat's colours
-
-    let beatNotes = [];
-
-    linked.forEach(u => {
-      for (let b = 0; b < 8; b += 1) {
-        if (!beatNotes[b]) {
-          beatNotes[b] = [];
-        }
-
-        if (u.beat.has(b)) {
-          beatNotes[b].push(u);
-        }
-      }
-    });
-
-    let output = JSON.stringify(
-      { users: users, you: user, linked: linked, beatNotes: beatNotes },
-      (key, value) => {
-        if (value instanceof Set) {
-          return Array.from(value);
-        }
-
-        return value;
-      }
-    );
-
-    res.end(output);
-  } else if (req.url === "/") {
-    let index = fs.readFileSync("index.html", "utf8");
-
-    res.setHeader("Content-Type", "text/html");
-
-    res.end(index);
-  } else if (req.url.indexOf("/static") !== -1) {
-    let file = fs.readFileSync(__dirname + req.url, "utf8");
-
-    res.end(file);
-  } else if (req.url.indexOf("/move") !== -1) {
+    res.end(getGridStatus(user));
+  } else if (query.move) {
+    
     let previousRow = users[user].location[0];
     let previousColumn = users[user].location[1];
 
-    let position = req.url.split("?")[1];
-
-    if (!position) {
-      return false;
-    }
-
-    let coords = position.split("-");
+    let coords = query.move.split("-");
 
     let row = parseInt(coords[0]);
     let column = parseInt(coords[1]);
@@ -266,31 +275,28 @@ const server = http.createServer((req, res) => {
       res.statusCode = 400;
       res.end(JSON.stringify(false));
     }
-  } else if (req.url.indexOf("/note") !== -1) {
-    let note = parseInt(req.url.split("?")[1]);
+  } else if (query.note) {
 
     // Check if note in range
 
-    if (note >= 0 && note <= 12) {
-      users[user].note = note;
+    if (query.note >= 0 && query.note <= 12) {
+      users[user].note = query.note;
     }
-  } else if (req.url.indexOf("/beatIn") !== -1) {
-    let beat = parseInt(req.url.split("?")[1]);
+  } else if (query.beatIn !== -1) {
 
     // Check if beat in range
 
-    if (beat >= 0 && beat <= 7) {
-      users[user].beat.add(beat);
+    if (query.beatIn >= 0 && query.beatIn <= 7) {
+      users[user].beat.add(query.beatIn);
     }
 
     res.end(JSON.stringify(Array.from(users[user].beat)));
-  } else if (req.url.indexOf("/beatOut") !== -1) {
-    let beat = parseInt(req.url.split("?")[1]);
+  } else if (query.beatOut) {
 
     // Check if beat in range
 
-    if (beat >= 0 && beat <= 7) {
-      users[user].beat.delete(beat);
+    if (query.beatOut >= 0 && query.beatOut <= 7) {
+      users[user].beat.delete(query.beatOut);
     }
 
     res.end(JSON.stringify(Array.from(users[user].beat)));
@@ -316,6 +322,4 @@ setInterval(() => {
   }
 }, 1000);
 
-server.listen(port, () => {
-  console.log(`Server running on ${port}/`);
-});
+server.listen(port);

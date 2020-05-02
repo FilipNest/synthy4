@@ -106,57 +106,62 @@ let playNotes = () => {
   });
 };
 
-let refresh = function() {
-  // Check if the audiocontext has been suspended for some reason and change mute button
-
-  if (window.audioCtx.state === "suspended") {
-    document.getElementById("audio-toggle").innerHTML = "Unmute";
-  } else {
-    document.getElementById("audio-toggle").innerHTML = "Mute";
-  }
-
-  // Store occupied locations so we can clear the rest
-
+let refreshPositions = users => {
+  
+  // Store occupied positions so we can clear the rest
   let occupied = [];
 
+  for (let user in users) {
+    user = users[user];
+
+    // Find element in lookup matrix
+
+    let row = user.location[0];
+    let column = user.location[1];
+
+    let location = grid[row][column];
+
+    // Clear you attribute in case you were previously in that square
+
+    location.removeAttribute("data-you");
+
+    occupied.push(location);
+
+    location.innerHTML = mapping[user.note];
+
+    if (user.id === you.id) {
+      location.setAttribute("data-you", "true");
+    }
+  }
+
+  // Clear all unused locations
+
+  document.querySelectorAll(".box").forEach(e => {
+    if (occupied.indexOf(e) === -1) {
+      e.removeAttribute("data-you");
+      e.innerHTML = "";
+    }
+  });
+};
+
+let refresh = function() {
+
   makeRequest("/status").then(data => {
+    // Check if the audiocontext has been suspended for some reason and change mute button
+
+    if (window.audioCtx.state === "suspended") {
+      document.getElementById("audio-toggle").innerHTML = "Unmute";
+    } else {
+      document.getElementById("audio-toggle").innerHTML = "Mute";
+    }
+
     linkedBeatNotes = data.beatNotes;
 
     let users = data.users;
 
     you = users[data.you];
-
-    for (let user in users) {
-      user = users[user];
-
-      // Find element in lookup matrix
-
-      let row = user.location[0];
-      let column = user.location[1];
-
-      let location = grid[row][column];
-
-      // Clear you attribute in case you were previously in that square
-
-      location.removeAttribute("data-you");
-
-      occupied.push(location);
-
-      location.innerHTML = mapping[user.note];
-
-      if (user.id === you.id) {
-        location.setAttribute("data-you", "true");
-      }
-    }
-
-    // Clear all unused locations
-
-    document.querySelectorAll(".box").forEach(e => {
-      if (occupied.indexOf(e) === -1) {
-        e.removeAttribute("data-you");
-        e.innerHTML = "";
-      }
-    });
+    
+    refreshPositions(users);
 
     // Add starting note and beat if not set already
 
@@ -173,7 +178,7 @@ let refresh = function() {
 // Move current user to a square
 
 let move = function(row, column) {
-  makeRequest("/move?" + row + "-" + column);
+  makeRequest("?move=" + row + "-" + column);
 };
 
 let moveDirection = direction => {
@@ -247,7 +252,7 @@ document.addEventListener("keydown", function(event) {
 // Make note change request
 
 let note = noteNumber => {
-  makeRequest("/note?" + noteNumber);
+  makeRequest("?note=" + noteNumber);
 
   // Highlight the user's selected note.
   // Can change to this straight away as nothing blocks it
@@ -293,12 +298,12 @@ let beat = function(beatNumber, on) {
   let request;
 
   if (on) {
-    request = "/beatIn";
+    request = "?beatIn=";
   } else {
-    request = "/beatOut";
+    request = "?beatOut=";
   }
 
-  makeRequest(request + "?" + beatNumber).then(result => {
+  makeRequest(request + beatNumber).then(result => {
     setBeat(result);
   });
 };

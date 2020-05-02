@@ -11,14 +11,15 @@
     <article id="intro">
       <h1 class="title">Synthy 4*</h1>
       <h2>
-        A collaborative multiplayer grid synthesizer by <a href="https://twitter.com/filipnest">FilipNest</a>
+        A collaborative multiplayer grid synthesizer by
+        <a href="https://twitter.com/filipnest">FilipNest</a>
       </h2>
       <p>
         Squares linked to others in a chain play together. Select which beats
-        you want to play on, pick a note, then move around the grid to join
-        others. Enjoy the colours. If it's lonely you can open different
-        browsers (recommended to mute all but one but the phasing is fun if you
-        don't). Click below to start!
+        you want to play on, pick a note, then move around the grid with arrows
+        / keyboard to join others. Enjoy the colours. If it's lonely you can
+        open different browsers (mute all but one or get fun phasing). WebMIDI
+        out supported where available. Click below to start!
       </p>
       <button id="start">♫</button>
       <p>
@@ -34,10 +35,8 @@
           core).
           <a href="https://en.wikipedia.org/wiki/Clavier_%C3%A0_lumi%C3%A8res"
             >Colours via Scriabin</a
-          >. Would probably be more fun with better sounds so could swap in a
-          better synth system (or web midi which is what Synthy 1 did), but
-          that's for another day. Or an actual pretty world rather than a
-          grid... Anyway! Thank you
+          >. Dreaming of a pretty world to put this in rather than a grid...
+          Anyway! Thank you
           <a href="https://glitch.com/~filipnest-synthy4">Glitch</a> for
           hosting.
         </small>
@@ -48,10 +47,7 @@
       <h1 class="title">
         Options
       </h1>
-      <p>
-        There's not that much here at the moment but making it a page in case
-        more gets added.
-      </p>
+
       <form id="options-form">
         <label for="sharps_flats">Sharps or flats?</label>
         <select id="sharps_flats" name="sharps_flats">
@@ -72,8 +68,9 @@
         <div id="midi-or-not"></div>
 
         <div id="midi-options">
-          
-          <button id="request-midi-access" type="button">Request MIDI Access</button>
+          <button id="request-midi-access" type="button">
+            Request MIDI Access
+          </button>
           <br />
 
           <label for="midi-device">MIDI Device</label>
