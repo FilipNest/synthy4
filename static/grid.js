@@ -39,34 +39,23 @@ let noteMappingFlats = {
   11: "B"
 };
 
-// Via Scriabin
+// Via Scriabin - Clavier à lumières
+// https://en.wikipedia.org/wiki/Clavier_%C3%A0_lumi%C3%A8res 
 
 let noteColours = {
-  0: "#ff0000",
-  1: "#cf9bff",
-  2: "#ffff00",
-  3: "#65659a",
-  4: "#e4fbff",
-  5: "#ae1600",
-  6: "#00cdff",
-  7: "#ff6500",
-  8: "#ff00ff",
-  9: "#2fcd30",
-  10: "#8d8b8d",
-  11: "#0000fe"
-};
-
-// Add note colours to keys
-
-document.querySelectorAll("[data-note]").forEach((key, index) => {
-
-  let colourMarker = document.createElement("span");
-  colourMarker.setAttribute("class", "colourmarker");
-  colourMarker.style.backgroundColor = noteColours[index];
-
-  key.insertAdjacentElement("beforeend", colourMarker);
-
-})
+  0: {hex:"#ff0000", name: "red (intense)"},
+  1: {hex:"#cf9bff",name: "violet or purple"},
+  2: {hex:"#ffff00",name: "yellow"},
+  3: {hex:"#65659a",name: "flesh (glint of steel)"},
+  4: {hex:"#e4fbff",name: "sky blue (moonshine or frost)"},
+  5: {hex:"#ae1600",name: "deep red"},
+  6: {hex:"#00cdff",name: "bright blue or violet"},
+  7: {hex:"#ff6500",name: "orange"},
+  8: {hex:"#ff00ff",name: "violet or lilac"},
+  9: {hex:"#2fcd30",name: "green"},
+  10: {hex:"#8d8b8d",name: "rose or steel"},
+  11: {hex:"#0000fe", name: "blue or pearly blue"}
+}
 
 let frequencyMapping = {
   0: 261.63,
@@ -83,8 +72,22 @@ let frequencyMapping = {
   11: 493.88
 };
 
-// Default to sharps. TODO: Switch
 let mapping = noteMappingSharps;
+
+// Add note colours to keys (and generate titles)
+
+document.querySelectorAll("[data-note]").forEach((key, index) => {
+
+  let colourMarker = document.createElement("span");
+  colourMarker.setAttribute("class", "colourmarker");
+
+  key.setAttribute("title", mapping[index] + " : " + noteColours[index].name);
+  
+  colourMarker.style.backgroundColor = noteColours[index].hex;
+
+  key.insertAdjacentElement("beforeend", colourMarker);
+
+})
 
 let generateGrid = function () {
   let size = 12;
@@ -379,7 +382,7 @@ let playBeat = (beat, beatNotes) => {
   //  Get all notes in beat for background colours
 
   let notes = beatNotes.map(u => {
-    return noteColours[u.note];
+    return noteColours[u.note].hex;
   });
 
   let background = "";
@@ -446,7 +449,7 @@ let playNote = (note, beat, location, background) => {
 
     let box = grid[row][column];
 
-    box.style.backgroundColor = noteColours[note];
+    box.style.backgroundColor = noteColours[note].hex;
     document.body.style.backgroundImage = background;
 
     if (window.midiOut) {
