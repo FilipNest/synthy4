@@ -283,8 +283,10 @@ let changeNote = noteNumber => {
     let keyNote = k.getAttribute("data-note");
     if (keyNote === noteNumber) {
       k.setAttribute("data-selected", "true");
+      k.setAttribute("aria-pressed", "true");
     } else {
       k.removeAttribute("data-selected");
+      k.setAttribute("aria-pressed", "false");
     }
   });
 };
@@ -335,8 +337,10 @@ let setBeat = beatList => {
 
     if (beatList.indexOf(beat) !== -1) {
       b.setAttribute("data-selected", "true");
+      b.setAttribute("aria-pressed", "true");
     } else {
       b.setAttribute("data-selected", "false");
+      b.setAttribute("aria-pressed", "false");
     }
   });
 };
