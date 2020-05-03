@@ -106,7 +106,7 @@ let generateGrid = function () {
 
 let apiRequest = params => {
 
-  url = "/api?params=" + encodeURIComponent(JSON.stringify(params));
+  let url = "/api?params=" + encodeURIComponent(JSON.stringify(params));
 
   return fetch(new Request(url)).then(response => response.json());
 
@@ -368,6 +368,7 @@ let start = () => {
 
   // create web audio api context
   window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
 };
 
 let playBeat = (beat, beatNotes) => {
@@ -396,7 +397,7 @@ let playNote = (note, beat, location, background) => {
 
   let oscillator = window.audioCtx.createOscillator();
   oscillator.type = "sawtooth";
-
+  
   let gain = window.audioCtx.createGain();
 
   oscillator.connect(gain);
@@ -413,7 +414,7 @@ let playNote = (note, beat, location, background) => {
   let release = oneBeat / 4;
 
   let beatStart = window.audioCtx.currentTime + noteStart;
-
+  
   oscillator.start(beatStart);
 
   gain.gain.linearRampToValueAtTime(1, beatStart + attack);
@@ -538,6 +539,7 @@ document.getElementById("request-midi-access").addEventListener("click", () => {
 // AudioContext toggle on and off for muting and also for browsers that suspend it when focus lost etc
 
 document.getElementById("audio-toggle").onclick = function () {
+    
   if (window.audioCtx.state === "suspended") {
     window.audioCtx.resume();
     document.getElementById("audio-toggle").innerHTML = "Mute";
