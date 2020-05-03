@@ -130,8 +130,13 @@ let refreshPositions = users => {
   // Store occupied positions so we can clear the rest
   let occupied = [];
 
-  for (let user in users) {
-    user = users[user];
+  // Initialise grid description in text
+
+  let gridDescription = [];
+
+  for (let userID in users) {
+
+    user = users[userID];
 
     // Find element in lookup matrix
 
@@ -139,6 +144,13 @@ let refreshPositions = users => {
     let column = user.location[1];
 
     let location = grid[row][column];
+
+    let serialisation = {
+      user: userID, 
+      position: row + "," + column,
+      note: mapping[user.note], 
+      colour: noteColours[user.note].name
+    };
 
     // Clear you attribute in case you were previously in that square
 
@@ -149,8 +161,12 @@ let refreshPositions = users => {
     location.innerHTML = mapping[user.note];
 
     if (user.id === you.id) {
+      serialisation["you"] = true;
       location.setAttribute("data-you", "true");
     }
+
+    gridDescription.push(serialisation);
+
   }
 
   // Clear all unused locations
@@ -161,6 +177,20 @@ let refreshPositions = users => {
       e.innerHTML = "";
     }
   });
+
+  // Update aria grid description
+
+  gridDescription = "<ul>" + gridDescription.reduce((curr, u) => {
+
+    curr += `<li>${u.note} at ${u.position}; ${u.colour}; ${u.user}</li>`;
+
+    return curr;
+
+  },"") + "</ul>";
+
+
+  document.getElementById("grid-caption").innerHTML = gridDescription;
+
 };
 
 let refresh = function () {
